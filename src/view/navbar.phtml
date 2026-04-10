@@ -1,9 +1,10 @@
 <style>
     .navbar {
-        background: linear-gradient(45deg, #28a745, #3cb371);
+        background: rgba(255, 255, 255, 0.18);
         padding: 10px 0;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-
+        /* backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px); */
     }
 
     .nav-list {
@@ -39,7 +40,7 @@
         position: absolute;
         top: 100%;
         left: 0;
-        background-color: #3cb371;
+        background-color: #59a700ff;
         padding: 0;
         margin: 0;
         min-width: 160px;
@@ -73,18 +74,51 @@
 <body>
     <div id="header" style="position:relative;">
         <nav class="navbar">
-            <ul class="nav-list">
+          <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="#">Nav-Item 1</a>
+                    <a href="https://mycampus.iu.org/">El Campus</a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://callisto-hamzah-mansor-dev02.haenjes-gruppe.de/">Das Telefon</a>
                     <ul class="dropdown">
-                        <li><a href="#">Dropdown Item 1</a></li>
-                        <li><a href="#">Dropdown Item 2</a></li>
+                        <li><a href="https://callisto-janole-biewig-dev02.haenjes-gruppe.de/">Jans Callisto</a></li>
+                        <li><a href="https://callisto-michael-geschke-dev02.haenjes-gruppe.de/">Michaels Callisto</a></li>
+                        <li><a href="https://test-janole-biewig-dev02.haenjes-gruppe.de/home/index">Jans Testlauf</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="#">Nav-Item 2</a>
-                    
-                </li>     
+                    <a href="https://phpmyadmin-dev02.haenjes-gruppe.de/">Der Admin</a>
+                    <ul class="dropdown">
+                        <li><a href="https://haenjes-gruppe.personio.de/">La Persona</a></li>
+                        <li><a href="https://app.asana.com/0/home/1206602318952246">El Asana</a></li>
+                        <li><a href="https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fdashboard">Der Hub</a></li>
+                        <li><a href="https://v1.lightningdesignsystem.com/">Blitz-Design</a></li>
+                        <li><a href="https://framework.zend.com/apidoc/1.12/packages/Zend_Db.html">Zend Datenbank</a></li>
+                        <li><a href="https://www.php.net/">Herr PHP</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="https://chatgpt.com/">Se&ntilde;or GPT</a>
+                    <ul class="dropdown">
+                        <li><a href="https://translate.google.com/?hl=de&sl=en&tl=de">El Traductor</a></li>
+                        <li><a href="https://rechtschreibpruefung24.de/">Rechtschreibung</a></li>
+                        <li><a href="https://www.perplexity.ai/">El Perplex</a></li>
+                        <li><a href="https://chat.deepseek.com/">Tief-Suche</a></li>
+                        <li><a href="https://quillbot.com/">Der Umschreiber</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="https://scholar.google.com/">El Scholar</a>
+                    <ul class="dropdown">
+			            <li><a href="https://der-artikel.de/">Der Artikel</a></li>
+			            <li><a href="https://www.summaries.co/">Das Fazit</a></li>
+			            <li><a href="https://annas-archive.org/">Annas Archiv</a></li>
+                        <li><a href="https://libgen.li/">Die B&auml;cherei</a></li>
+                        <li><a href="https://www.semanticscholar.org/">Der Gelehrte</a></li>
+                        <li><a href="https://www.researchrabbit.ai/">Der Hase</a></li>
+                    </ul>
+                </li>
             </ul>
         </nav>
     </div>
+    
