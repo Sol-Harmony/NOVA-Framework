@@ -17,7 +17,7 @@ class Validate    //class containing functions, to check the user input
             return $displayName . " is too long!!!";
         } elseif (strlen($input) < 2) {
             return $displayName . " is too short!";
-        } elseif (!preg_match('/[a-zA-Z0-9_\.\!\-\(\)]$/', $input)) {
+        } elseif (!preg_match('/^[a-zA-Z0-9_\.\!\-\(\)]+$/', $input)) {
             return "Invalid " . $displayName . ". Only (a-z, A-Z, ( ! . - _ ) and numbers are allowed!";
         }
     }
@@ -28,9 +28,8 @@ class Validate    //class containing functions, to check the user input
             return "Password missing!";
         } elseif (strlen($input) > 32 || strlen($input) < 8) {
             return "Password lengh must be between 8 and 32";
-        } elseif (!preg_match('/[a-zA-Z0-9_]$/', $input) && strlen($input) > 8 && strlen($input) < 32) {
-            return "Invalid Password";
         }
+        //no character check on purpose: passwords get hashed, so special characters are safe and make them stronger
     }
 
     public function ValidateUsername($input)
@@ -39,7 +38,7 @@ class Validate    //class containing functions, to check the user input
             return "Username missing!";
         } elseif (strlen($input) > 32 || strlen($input) < 4) {
             return "Username has to have a lengh between 4 and 32";
-        } elseif (!preg_match('/[a-zA-Z0-9_]$/', $input)) {
+        } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $input)) {
             return "Invalid Username";
         }
     }

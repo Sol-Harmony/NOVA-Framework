@@ -29,4 +29,14 @@ class Utils extends Controller
             echo "No Head found!<br/>";
         }
     }
+
+    public static function includeFooter()
+    {
+        $footerPath = BASEPATH . '/src/view/footer.phtml';
+        if (file_exists($footerPath)) {
+            require_once($footerPath);
+        } else {
+            echo "No Footer found!<br/>";
+        }
+    }
 }

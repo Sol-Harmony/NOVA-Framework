@@ -1,3 +1,9 @@
+/* without this, the page (now in standards mode because of the doctype) is only as tall as its content
+   and the background image would stop there */
+html {
+    height: 100%;
+}
+
 button {
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -82,4 +88,76 @@ body {
     100% {
         margin-bottom: 1px;
     }
+}
+
+/* navbar (moved here from navbar.phtml) */
+.navbar {
+    background: rgba(255, 255, 255, 0.18);
+    padding: 10px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    /* backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px); */
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.nav-list a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.dropdown {
+    list-style: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #59a700ff;
+    padding: 0;
+    margin: 0;
+    min-width: 160px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    display: none;
+    z-index: 1;
+}
+
+.dropdown li {
+    width: 100%;
+}
+
+.dropdown li a {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown li a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-item:hover .dropdown {
+    display: block;
 }

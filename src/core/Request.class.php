@@ -27,15 +27,14 @@ class Request
         return $_SERVER['REQUEST_URI'];
     }
 
-    public function isSubmit()    //function that returns true when a submit button is used
+    public function getPath()
+    { //the url without the query string (?id=5), used by the router. read the query values with getParam()
+        return explode('?', $_SERVER['REQUEST_URI'], 2)[0];
+    }
+
+    public function isSubmit()    //function that returns true when a form was submitted with method="post"
     {
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            return true;
-        } elseif ($_SERVER['REQUEST_METHOD'] === "GET") {
-            return true;
-        } else {
-            return false;
-        }
+        return $_SERVER['REQUEST_METHOD'] === "POST";
     }
 
     public function __set($name, $value)
