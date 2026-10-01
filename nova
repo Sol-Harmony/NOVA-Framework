@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Terminal commands of the framework. Run from the project folder:
+ *   php nova make Product
+ *   php nova help
+ **/
+
+if (PHP_SAPI !== 'cli') {    //only from the terminal, never through the web server
+    exit;
+}
+
+define("BASEPATH", __DIR__);
+define("DEBUG", true);
+
+include(BASEPATH . '/src/core/Autoloader.php');
+$autoloader = new Autoloader(BASEPATH);
+$autoloader->trigger();
+
+exit((new Console(BASEPATH))->run($argv));

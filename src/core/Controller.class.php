@@ -49,12 +49,13 @@ class Controller
             $viewFile = BASEPATH . '/src/view/' . $this->view . '.phtml';
         }
 
-        if (file_exists($viewFile)) {
-            Utils::includeHead();
-            Utils::includeNavbar();
-            include_once($viewFile);
-        } else {
-            echo "View not found: $viewFile";
+        if (!file_exists($viewFile)) {
+            throw new RuntimeException("View not found: $viewFile");
         }
+
+        Utils::includeHead();
+        Utils::includeNavbar();
+        include_once($viewFile);
+        Utils::includeFooter();
     }
 }

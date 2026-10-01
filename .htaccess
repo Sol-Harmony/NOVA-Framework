@@ -1,3 +1,11 @@
 RewriteEngine ON
+
+# block direct access to the config, the php source, the nova terminal script and dotfiles (.git, .gitignore, .htaccess)
+# src/scripts stays public because the views load their js from there
+RewriteRule ^nova$ - [F,L]
+RewriteRule ^config(/|$) - [F,L]
+RewriteRule ^src(/(?!scripts/)|$) - [F,L]
+RewriteRule (^|/)\.(?!well-known/) - [F,L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)? index.php
+RewriteRule ^(.*)? index.php [L]

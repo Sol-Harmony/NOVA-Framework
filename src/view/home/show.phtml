@@ -1,26 +1,35 @@
-<h1>Home Page</h1>
-
-<button id="loadDataBtn">Load Data</button>
-
-<div id="result" style="margin-top: 1rem; color: blue;"></div>
-
+<div style="margin-top:0;">
+    <button id="loadDataBtn" style="margin-top:6em;">AJAX</button>
+    <div id="result"></div>
+</div>
 <script>
-jQuery(document).ready(function () {
-    jQuery("#loadDataBtn").on("click", function () {
-        jQuery.ajax({
-            url: "/home/data", // this hits home->dataAction
-            method: "GET",
-            dataType: "json",
-            success: function (data) {
-                jQuery("#result").html(`
-                    <h2>${data.message}</h2>
-                    <h3>${data.timestamp}</h3>
+    let eventWithTimeout;
+    function clearResultAfterDelay() {
+        if (eventWithTimeout) {
+            clearTimeout(eventWithTimeout);
+        }
+        eventWithTimeout = setTimeout(function() {
+            jQuery("#result").html("");
+        }, 3000);
+    }
+    jQuery(document).ready(function() {
+        jQuery("#loadDataBtn").on("click", function() {
+            jQuery.ajax({
+                url: "/home/data", // this hits home->dataAction
+                method: "GET",
+                dataType: "json",
+                success: function(data) {
+                    jQuery("#result").html(`
+                    <h4>${data.message}</h4>
+                    <h4>${data.timestamp}</h4>
                 `);
-            },
-            error: function (jqXHR) {
-                jQuery("#result").html(`<span style="color:red;">Error: ${jqXHR.statusText || "Network error"}</span>`);
-            }
+                    clearResultAfterDelay();
+                },
+                error: function(jqXHR) {
+                    jQuery("#result").html(`<span style="color:red;">Error: ${jqXHR.statusText || "Network error"}</span>`);
+                    clearResultAfterDelay();
+                }
+            });
         });
     });
-});
 </script>

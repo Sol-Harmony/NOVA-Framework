@@ -1,90 +1,27 @@
-<style>
-    .navbar {
-        background: linear-gradient(45deg, #28a745, #3cb371);
-        padding: 10px 0;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-
-    }
-
-    .nav-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-    }
-
-    .nav-item {
-        position: relative;
-    }
-
-    .nav-list a {
-        text-decoration: none;
-        color: white;
-        font-size: 18px;
-        font-weight: bold;
-        padding: 8px 16px;
-        border-radius: 5px;
-        transition: background-color 0.3s, transform 0.3s;
-    }
-
-    .nav-list a:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-        transform: scale(1.1);
-    }
-
-    .dropdown {
-        list-style: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background-color: #3cb371;
-        padding: 0;
-        margin: 0;
-        min-width: 160px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        border-radius: 5px;
-        display: none;
-        z-index: 1;
-    }
-
-    .dropdown li {
-        width: 100%;
-    }
-
-    .dropdown li a {
-        display: block;
-        padding: 10px;
-        color: white;
-        text-align: left;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .dropdown li a:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .nav-item:hover .dropdown {
-        display: block;
-    }
-</style>
-
-<body>
     <div id="header" style="position:relative;">
         <nav class="navbar">
-            <ul class="nav-list">
+          <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="#">Nav-Item 1</a>
+                    <a href="#">NAVITEM 1</a>
                     <ul class="dropdown">
-                        <li><a href="#">Dropdown Item 1</a></li>
-                        <li><a href="#">Dropdown Item 2</a></li>
+                        <li><a href="#">DROPDOWN 1</a></li>
+                        <li><a href="#">DROPDOWN 2</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="#">Nav-Item 2</a>
-                    
-                </li>     
+                    <a href="#">NAVITEM 2</a>
+                    <ul class="dropdown">
+                        <li><a href="#">DROPDOWN 1</a></li>
+                        <li><a href="#">DROPDOWN 2</a></li>
+                        <li><a href="#">DROPDOWN 3</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#">NAVITEM 3</a>
+                    <ul class="dropdown">
+                    </ul>
+                </li>
             </ul>
         </nav>
     </div>
+    

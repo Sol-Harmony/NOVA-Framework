@@ -1,11 +1,42 @@
+/* without this, the page (now in standards mode because of the doctype) is only as tall as its content
+   and the background image would stop there */
+html {
+    height: 100%;
+}
+
+button {
+    background: rgba(2, 80, 14, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
+    color: #f2ecd6;
+    padding: 0.5em 1.2em;
+    font-size: 1em;
+    font-weight: bold;
+    font-family: Helvetica, Arial, sans-serif;
+    transition: background 0.2s, color 0.2s;
+    cursor: pointer;
+}
+
+button:hover {
+    background: rgba(255, 255, 255, 0.35);
+    color: #0c301a;
+}
 body {
     margin: 0;
-    height: 100vw;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     align-items: center;
     overflow: hidden;
     text-align: center;
-    background-color: lightgreen;
+    color: #f2ecd6;
+    font-family: Helvetica, Arial, sans-serif;
+    background-image: url('../pictures/home.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .game {
@@ -61,4 +92,78 @@ body {
     100% {
         margin-bottom: 1px;
     }
+}
+
+.navbar {
+    background: rgba(2, 80, 14, 0.3);
+    padding: 10px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    /* backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px); */
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: #f2ecd6;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.nav-list a:hover {
+    background: rgba(255, 255, 255, 0.35);
+    color: #0c301a;
+}
+
+.dropdown {
+    list-style: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(2, 80, 14, 0.8);
+    padding: 0;
+    margin: 0;
+    min-width: 100%;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    display: none;
+    z-index: 1;
+}
+
+.dropdown li {
+    width: 100%;
+}
+
+.dropdown li a {
+    display: block;
+    padding: 10px;
+    color: #f2ecd6;
+    text-align: left;
+    border-bottom: 1px solid rgba(2, 80, 14, 0.3);
+}
+
+.dropdown li a:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+    color: #0c301a;
+}
+
+.nav-item:hover .dropdown {
+    display: block;
 }

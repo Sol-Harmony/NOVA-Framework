@@ -4,42 +4,54 @@
  * This project is licensed under the GNU LGPL v2.1.
  * You may use, modify, and distribute it under the terms of this license.
  * Modifications must remain open-source under the same license.
- * 
- * Copyright (C) 2025 Hamzah Mansor 
+ *
+ * Copyright (C) 2025 Hamzah Mansor
  **/
 class dbConnect
 {
-    private $servername;
-    private $username;
-    private $password;
-    private $database;
-    private $charset;
+    private static $pdo = null;     //one shared connection for the whole request
 
     //connect to server with pdo
 
     public function connect()
     {
-        $this->charset  =  "utf8mb4";
-        $config = BASEPATH . '/config.ini';
-
-        if (file_exists($config)) {
-            $dbData = parse_ini_file($config);
-            foreach ($dbData as $key => $value) {
-                $this->$key = $value;
-            }
-            try {
-                $dsn = "mysql:host=" . $this->servername . ";dbname=" . $this->database . ";charset=" . $this->charset;
-                $pdo = new PDO($dsn, $this->username, $this->password);
-                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                //echo "Connected to Database<br/>";
-                return $pdo;
-            } catch (PDOException $th) {
-                echo "OOPS! Connection Faild: " . $th->getCode() . "<br/>";
-                exit;
-            }
-        } else {
-            echo "No database data available";
-            exit;
+        if (self::$pdo !== null) {
+            return self::$pdo;
         }
+
+        $config = BASEPATH . '/config/config.ini';
+        $dbData = file_exists($config) ? parse_ini_file($config) : false;
+        if (!$dbData) {
+            throw new RuntimeException("No database data available. Copy config/config.example.ini to config/config.ini and fill it in.");
+        }
+        foreach (['servername', 'username', 'password', 'database'] as $key) {
+            if (!isset($dbData[$key])) {
+                throw new RuntimeException("Missing '$key' in config/config.ini");
+            }
+        }
+
+        try {
+            $dsn = "mysql:host=" . $dbData['servername'] . ";dbname=" . $dbData['database'] . ";charset=utf8mb4";
+            $pdo = new PDO($dsn, $dbData['username'], $dbData['password']);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $th) {
+            //rethrow without the original exception, its stack trace contains the password
+            throw new RuntimeException("OOPS! Connection Failed: " . $th->getMessage());
+        }
+
+        return self::$pdo = $pdo;
+    }
+
+    //wraps a table or column name in backticks (so reserved words like `default` work)
+    //and rejects anything that isn't a plain name, so user input can't inject sql through keys
+    protected function quoteName($name)
+    {
+        $parts = explode('.', $name);   //allows database.table
+        foreach ($parts as $part) {
+            if (!preg_match('/^[A-Za-z0-9_]+$/', $part)) {
+                throw new InvalidArgumentException("Invalid table or column name: $name");
+            }
+        }
+        return '`' . implode('`.`', $parts) . '`';
     }
 }
