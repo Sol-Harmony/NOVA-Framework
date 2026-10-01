@@ -1,35 +1,54 @@
-<div style="margin-top:0;">
-    <button id="loadDataBtn" style="margin-top:6em;">AJAX</button>
-    <div id="result"></div>
-</div>
-<script>
-    let eventWithTimeout;
-    function clearResultAfterDelay() {
-        if (eventWithTimeout) {
-            clearTimeout(eventWithTimeout);
-        }
-        eventWithTimeout = setTimeout(function() {
-            jQuery("#result").html("");
-        }, 3000);
-    }
-    jQuery(document).ready(function() {
-        jQuery("#loadDataBtn").on("click", function() {
-            jQuery.ajax({
-                url: "/home/data", // this hits home->dataAction
-                method: "GET",
-                dataType: "json",
-                success: function(data) {
-                    jQuery("#result").html(`
-                    <h4>${data.message}</h4>
-                    <h4>${data.timestamp}</h4>
-                `);
-                    clearResultAfterDelay();
-                },
-                error: function(jqXHR) {
-                    jQuery("#result").html(`<span style="color:red;">Error: ${jqXHR.statusText || "Network error"}</span>`);
-                    clearResultAfterDelay();
-                }
-            });
-        });
-    });
-</script>
+<section class="hero">
+    <div class="story-bg"></div>
+    <div class="container">
+        <h1><?= e(Config::get('site.name', '')) ?></h1>
+        <p class="hero-tagline"><?= e(Config::get('site.tagline', '')) ?></p>
+        <a class="btn btn-light" href="<?= e(route('contact')) ?>"><?= e(t('home.cta')) ?></a>
+    </div>
+</section>
+
+<section class="intro">
+    <div class="story-bg"></div>
+    <div class="container">
+        <h2><?= e(t('home.intro_title')) ?></h2>
+        <p class="lead"><?= e(t('home.intro_text')) ?></p>
+
+        <div class="card-grid">
+            <?php foreach ([1, 2, 3] as $n): ?>
+            <article class="card">
+                <h3><?= e(t('home.card' . $n . '_title')) ?></h3>
+                <p><?= e(t('home.card' . $n . '_text')) ?></p>
+            </article>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+<?php
+// scroll story: while scrolling, the picture in the background and the text card in front change.
+// Pictures: --story-image-1 to 3 in assets/theme.css. Texts: story.N_title and story.N_text in src/lang.
+// Side of the card (left or right): pick the side that keeps the picture's subject free. More steps: add a line here,
+// a .story-4 rule in style.css and a --story-image-4 in theme.css.
+$steps = [1 => 'left', 2 => 'right', 3 => 'left'];
+?>
+<section class="story">
+    <?php foreach ($steps as $n => $side): ?>
+    <article class="story-panel story-<?= (int) $n ?> story-<?= e($side) ?>">
+        <div class="story-bg"></div>
+        <div class="container">
+            <div class="story-card">
+                <h3><?= e(t('story.' . $n . '_title')) ?></h3>
+                <p><?= e(t('story.' . $n . '_text')) ?></p>
+            </div>
+        </div>
+    </article>
+    <?php endforeach; ?>
+</section>
+
+<section class="cta-band">
+    <div class="container">
+        <h2><?= e(t('home.bottom_title')) ?></h2>
+        <p><?= e(t('home.bottom_text')) ?></p>
+        <a class="btn btn-light" href="<?= e(route('contact')) ?>"><?= e(t('home.cta')) ?></a>
+    </div>
+</section>

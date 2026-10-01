@@ -1,1 +1,4 @@
 config/config.ini
+storage/*
+!storage/.gitkeep
+!storage/.htaccess

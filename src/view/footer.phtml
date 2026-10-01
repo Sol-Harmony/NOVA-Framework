@@ -1,2 +1,64 @@
+<?php
+$hours = Config::get('site.business.hours', []);
+$phone = biz('phone');
+$tel = preg_replace('/[^0-9+]/', '', $phone);
+$mapUrl = Utils::mapUrl();
+$social = Config::get('site.social', []);
+?>
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div>
+            <strong><?= e(biz('name') ?: Config::get('site.name', '')) ?></strong>
+<?php if (biz('street') !== '' || biz('city') !== ''): ?>
+            <address>
+                <?= e(biz('street')) ?><br>
+                <?= e(trim(biz('zip') . ' ' . biz('city'))) ?>
+            </address>
+<?php endif; ?>
+<?php if ($mapUrl !== ''): ?>
+            <p><a href="<?= e($mapUrl) ?>" target="_blank" rel="noopener noreferrer"><?= e(t('contact.route')) ?></a></p>
+<?php endif; ?>
+<?php if ($phone !== ''): ?>
+            <p><a href="tel:<?= e($tel) ?>"><?= e($phone) ?></a></p>
+<?php endif; ?>
+<?php if (biz('email') !== ''): ?>
+            <p><a href="mailto:<?= e(biz('email')) ?>"><?= e(biz('email')) ?></a></p>
+<?php endif; ?>
+        </div>
+<?php if (is_array($hours) && $hours): ?>
+        <div>
+            <strong><?= e(t('footer.hours')) ?></strong>
+            <dl class="hours">
+<?php foreach ($hours as $row): ?>
+                <dt><?= e($row[0] ?? '') ?></dt>
+                <dd><?= e($row[1] ?? '') ?></dd>
+<?php endforeach; ?>
+            </dl>
+        </div>
+<?php endif; ?>
+<?php if (is_array($social) && $social): ?>
+        <div>
+            <strong><?= e(t('footer.follow')) ?></strong>
+            <ul class="social">
+<?php foreach ($social as $label => $link): ?>
+<?php if (is_string($link) && preg_match('#^https?://#', $link)): ?>
+                <li><a href="<?= e($link) ?>" target="_blank" rel="noopener noreferrer"><?= e(is_string($label) ? $label : $link) ?></a></li>
+<?php endif; ?>
+<?php endforeach; ?>
+            </ul>
+        </div>
+<?php endif; ?>
+    </div>
+    <div class="container footer-bottom">
+        <span>&copy; <?= e(date('Y')) ?> <?= e(biz('name') ?: Config::get('site.name', '')) ?>. <?= e(t('footer.rights')) ?></span>
+        <nav aria-label="Legal">
+            <a href="<?= e(route('impressum')) ?>"><?= e(t('footer.imprint')) ?></a>
+            <a href="<?= e(route('privacy')) ?>"><?= e(t('footer.privacy')) ?></a>
+        </nav>
+    </div>
+</footer>
+<?php if ($phone !== ''): ?>
+<a class="call-bar" href="tel:<?= e($tel) ?>"><?= e(t('call')) ?> · <?= e($phone) ?></a>
+<?php endif; ?>
 </body>
 </html>

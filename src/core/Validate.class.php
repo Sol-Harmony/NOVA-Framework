@@ -52,6 +52,28 @@ class Validate    //class containing functions, to check the user input
         }
     }
 
+    public function ValidateEmail($input)
+    {
+        if (empty($input)) {
+            return t('validate.email_missing');
+        } elseif (strlen($input) > 254 || !filter_var($input, FILTER_VALIDATE_EMAIL)) {
+            return t('validate.email_invalid');
+        }
+    }
+
+    //free text (name, message): length is counted in characters, so umlauts count once
+    public function ValidateText($input, $displayName, $min = 2, $max = 100)
+    {
+        $length = mb_strlen($input);
+        if ($length === 0) {
+            return t('validate.missing', ['field' => $displayName]);
+        } elseif ($length < $min) {
+            return t('validate.too_short', ['field' => $displayName, 'min' => $min]);
+        } elseif ($length > $max) {
+            return t('validate.too_long', ['field' => $displayName, 'max' => $max]);
+        }
+    }
+
     public function ValidateEmpty($input)
     {
         if (is_null($input) || strlen($input) == 0) {

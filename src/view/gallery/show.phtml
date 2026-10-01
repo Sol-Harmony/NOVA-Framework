@@ -1,0 +1,15 @@
+<section class="container section">
+    <h1><?= e(t('gallery.title')) ?></h1>
+    <p class="lead"><?= e(t('gallery.intro')) ?></p>
+
+<?php if ($this->data['images']): ?>
+    <div class="gallery">
+<?php foreach ($this->data['images'] as $image): ?>
+<?php if (!is_array($image) || empty($image['src'])) { continue; } ?>
+        <a href="<?= e($image['src']) ?>" target="_blank" rel="noopener">
+            <img src="<?= e($image['src']) ?>" alt="<?= e($image['alt'] ?? '') ?>" loading="lazy">
+        </a>
+<?php endforeach; ?>
+    </div>
+<?php endif; ?>
+</section>

@@ -1,169 +1,645 @@
-/* without this, the page (now in standards mode because of the doctype) is only as tall as its content
-   and the background image would stop there */
+/* Layout and components. Colors, fonts and shapes come from theme.css, change them there. */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 html {
-    height: 100%;
+    -webkit-text-size-adjust: 100%;
 }
 
-button {
-    background: rgba(2, 80, 14, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(1px);
-    -webkit-backdrop-filter: blur(1px);
-    color: #f2ecd6;
-    padding: 0.5em 1.2em;
-    font-size: 1em;
-    font-weight: bold;
-    font-family: Helvetica, Arial, sans-serif;
-    transition: background 0.2s, color 0.2s;
-    cursor: pointer;
-}
-
-button:hover {
-    background: rgba(255, 255, 255, 0.35);
-    color: #0c301a;
-}
 body {
     margin: 0;
-    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    line-height: 1.6;
+}
+
+main {
+    flex: 1;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--font-heading);
+    line-height: 1.2;
+    color: var(--color-primary-dark);
+}
+
+a {
+    color: var(--color-primary);
+}
+
+a:hover {
+    color: var(--color-primary-dark);
+}
+
+:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.container {
     width: 100%;
-    align-items: center;
-    overflow: hidden;
-    text-align: center;
-    color: #f2ecd6;
-    font-family: Helvetica, Arial, sans-serif;
-    background-image: url('../pictures/home.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-.game {
-    width: 100vw;
-    border-bottom: 1px solid black;
-    position: relative;
-    margin-bottom: 50%;
-    margin-top: 45%;
+.section {
+    padding-top: 48px;
+    padding-bottom: 48px;
 }
 
-.dino,
-.cactus {
+.lead {
+    font-size: 1.15em;
+    max-width: 46em;
+}
+
+.skip-link {
     position: absolute;
-    bottom: 0;
+    left: -9999px;
+    top: 0;
+    background: var(--color-surface);
+    padding: 8px 14px;
+    z-index: 100;
 }
 
-.dino {
-    left: 10px;
+.skip-link:focus {
+    left: 8px;
+    top: 8px;
 }
 
-.cactus {
-    right: 10px;
-    height: 50px;
+/* ---------- header and menu ---------- */
+.site-header {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.move {
-    animation: cactus-move 2.2s infinite;
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: var(--header-height);
 }
 
-@keyframes cactus-move {
-    0% {
-        right: 0;
-    }
-
-    100% {
-        right: 110vw;
-    }
-}
-
-.jump {
-    animation: dino-jump 1s;
-}
-
-@keyframes dino-jump {
-    0% {
-        margin-bottom: 1px;
-    }
-
-    50% {
-        margin-bottom: 120px;
-    }
-
-    100% {
-        margin-bottom: 1px;
-    }
-}
-
-.navbar {
-    background: rgba(2, 80, 14, 0.3);
-    padding: 10px 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    /* backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px); */
+.brand {
+    color: var(--color-on-primary);
+    font-size: 1.3em;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .nav-list {
     list-style: none;
-    padding: 0;
     margin: 0;
+    padding: 0;
     display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.nav-item {
-    position: relative;
+    gap: 6px;
 }
 
 .nav-list a {
-    text-decoration: none;
-    color: #f2ecd6;
-    font-size: 18px;
+    display: block;
+    padding: 8px 14px;
+    border-radius: var(--radius);
+    color: var(--color-on-primary);
     font-weight: bold;
-    padding: 8px 16px;
-    border-radius: 5px;
-    transition: background-color 0.3s, transform 0.3s;
+    text-decoration: none;
 }
 
-.nav-list a:hover {
-    background: rgba(255, 255, 255, 0.35);
-    color: #0c301a;
+.nav-list a:hover,
+.nav-list a[aria-current="page"] {
+    background: rgba(255, 255, 255, 0.2);
 }
 
-.dropdown {
-    list-style: none;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(2, 80, 14, 0.8);
-    padding: 0;
-    margin: 0;
-    min-width: 100%;
-    white-space: nowrap;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
+.site-header :focus-visible {
+    outline-color: var(--color-on-primary);
+}
+
+.nav-toggle {
     display: none;
-    z-index: 1;
 }
 
-.dropdown li {
+/* ---------- buttons ---------- */
+.btn,
+button.btn {
+    display: inline-block;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius);
+    padding: 0.6em 1.4em;
+    font: inherit;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn:hover {
+    background: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+    color: var(--color-on-primary);
+}
+
+.btn-light {
+    background: var(--color-on-primary);
+    border-color: var(--color-on-primary);
+    color: var(--color-primary-dark);
+}
+
+.btn-light:hover {
+    background: transparent;
+    color: var(--color-on-primary);
+    border-color: var(--color-on-primary);
+}
+
+/* ---------- start page ---------- */
+/* the start picture is the background of the hero and of the intro below it. It is fixed to the screen and seen through
+   both sections (same technique as the scroll story), so it looks like one picture covering the first screen.
+   The hero is only half a screen high, so the name and the Willkommen text are both visible without scrolling. */
+.hero,
+.intro {
+    --story-image: var(--hero-image);
+    --story-position: center;
+    --story-overlay: var(--hero-overlay);
+    position: relative;
+    color: var(--color-on-primary);
+}
+
+.hero .container,
+.intro .container {
+    position: relative;
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    min-height: 52vh;
+    min-height: 52svh;
+    padding: 40px 0 24px;
+    text-align: center;
+}
+
+.intro {
+    padding: 24px 0 64px;
+}
+
+.intro h2,
+.intro h3 {
+    color: var(--color-on-primary);
+}
+
+.hero h1 {
+    color: var(--color-on-primary);
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    margin: 0 0 12px;
+}
+
+.hero-tagline {
+    font-size: 1.3em;
+    margin: 0 0 28px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-top: 32px;
+}
+
+.card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 24px;
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 1.25em;
+}
+
+.price {
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+/* on a picture (the start page) a card is transparent "glass" instead */
+.intro .card {
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    color: var(--color-on-primary);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+.section-cta {
+    margin-top: 32px;
+}
+
+/* gallery */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.gallery a {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--color-border);
+}
+
+.gallery img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
 }
 
-.dropdown li a {
+.gallery a:hover img {
+    transform: scale(1.04);
+}
+
+/* "Call now" bar at the bottom of the screen, phones only */
+.call-bar {
+    display: none;
+}
+
+.social {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+/* scroll story: every panel is as high as the screen. Its picture is fixed to the screen but only visible inside the panel
+   (clip-path), so while scrolling the next panel slides over the picture and shows its own. No javascript needed. */
+.story-panel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+    padding: 60px 0;
+}
+
+.story-bg {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0);
+}
+
+.story-bg::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(var(--story-overlay), var(--story-overlay)), var(--story-image) var(--story-position) / cover no-repeat;
+}
+
+.story-1 {
+    --story-image: var(--story-image-1);
+    --story-position: var(--story-position-1, center);
+}
+
+.story-2 {
+    --story-image: var(--story-image-2);
+    --story-position: var(--story-position-2, center);
+}
+
+.story-3 {
+    --story-image: var(--story-image-3);
+    --story-position: var(--story-position-3, center);
+}
+
+.story-panel .container {
+    position: relative;
+    display: flex;
+}
+
+.story-right .container {
+    justify-content: flex-end;
+}
+
+.story-card {
+    max-width: 22rem;
+    padding: 28px 30px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--color-on-primary);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+.story-card h3 {
+    margin: 0 0 8px;
+    color: var(--color-on-primary);
+}
+
+.story-card p {
+    margin: 0;
+}
+
+.cta-band {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    text-align: center;
+    padding: 48px 0;
+}
+
+.cta-band h2 {
+    color: var(--color-on-primary);
+    margin-top: 0;
+}
+
+/* ---------- forms ---------- */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    margin-top: 24px;
+}
+
+.form-row {
+    margin-bottom: 18px;
+}
+
+.form-row label {
     display: block;
-    padding: 10px;
-    color: #f2ecd6;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.form-row input,
+.form-row textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font: inherit;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+}
+
+.form-row.has-error input,
+.form-row.has-error textarea {
+    border-color: var(--color-error);
+}
+
+.form-note {
+    font-size: 0.9em;
+    color: var(--color-muted);
+}
+
+/* honeypot: out of sight for people (display:none could be recognised by bots) */
+.hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.alert {
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin: 20px 0;
+    border: 1px solid;
+}
+
+.alert ul {
+    margin: 6px 0 0;
+    padding-left: 20px;
+}
+
+.alert-success {
+    background: var(--color-success-bg);
+    border-color: var(--color-success);
+    color: var(--color-success);
+}
+
+.alert-error {
+    background: var(--color-error-bg);
+    border-color: var(--color-error);
+    color: var(--color-error);
+}
+
+.contact-info h2 {
+    font-size: 1.1em;
+    margin-top: 0;
+}
+
+address {
+    font-style: normal;
+}
+
+.hours {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2px 16px;
+    margin: 6px 0 0;
+}
+
+.hours dt {
+    font-weight: bold;
+}
+
+.hours dd {
+    margin: 0;
+}
+
+/* ---------- text pages (Impressum, privacy) ---------- */
+.prose {
+    max-width: 46em;
+}
+
+.prose h2 {
+    margin-top: 1.8em;
+    font-size: 1.2em;
+}
+
+/* ---------- tables (php nova make) ---------- */
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    background: var(--color-surface);
+}
+
+.table th,
+.table td {
+    padding: 8px 12px;
     text-align: left;
-    border-bottom: 1px solid rgba(2, 80, 14, 0.3);
+    border-bottom: 1px solid var(--color-border);
 }
 
-.dropdown li a:hover {
-    background-color: rgba(255, 255, 255, 0.35);
-    color: #0c301a;
+/* ---------- error page ---------- */
+.error-page {
+    padding: 80px 20px;
+    text-align: center;
 }
 
-.nav-item:hover .dropdown {
-    display: block;
+.error-code {
+    font-size: 5rem;
+    font-weight: bold;
+    margin: 0;
+    color: var(--color-primary);
+}
+
+.error-detail {
+    text-align: left;
+    overflow: auto;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 12px;
+}
+
+/* ---------- footer ---------- */
+.site-footer {
+    background: var(--color-primary-dark);
+    color: var(--color-on-primary);
+    padding: 32px 0 20px;
+    margin-top: 0;
+}
+
+.site-footer a {
+    color: var(--color-on-primary);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+}
+
+.footer-grid p {
+    margin: 4px 0;
+}
+
+.footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    font-size: 0.9em;
+}
+
+.footer-bottom nav a {
+    margin-left: 16px;
+}
+
+/* ---------- small screens ---------- */
+@media (max-width: 720px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        min-height: 40svh;
+        padding: 32px 0 16px;
+    }
+
+    .story-panel {
+        min-height: 85vh;
+    }
+
+    .call-bar {
+        display: block;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 50;
+        padding: 14px 16px;
+        background: var(--color-primary);
+        color: var(--color-on-primary);
+        text-align: center;
+        font-weight: bold;
+        text-decoration: none;
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .call-bar:hover {
+        color: var(--color-on-primary);
+    }
+
+    /* room for the bar, so it doesn't cover the end of the footer */
+    .has-call-bar {
+        padding-bottom: 52px;
+    }
+
+    .header-inner {
+        flex-wrap: wrap;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .nav-list {
+        flex-direction: column;
+    }
+
+    .site-nav {
+        width: 100%;
+    }
+
+    /* main.js adds the class "js". without javascript the menu simply stays open */
+    .js .nav-toggle {
+        display: block;
+        background: transparent;
+        color: var(--color-on-primary);
+        border: 2px solid var(--color-on-primary);
+        border-radius: var(--radius);
+        padding: 6px 14px;
+        font: inherit;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .js .site-nav {
+        display: none;
+    }
+
+    .js .site-nav.open {
+        display: block;
+    }
+
+    .footer-bottom nav a {
+        margin: 0 16px 0 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+
+    /* no sliding-over effect: the pictures scroll along with the page */
+    .story-bg::before {
+        position: absolute;
+    }
 }

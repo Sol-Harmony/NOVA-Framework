@@ -1,0 +1,7 @@
+# second lock: nothing in this folder is ever served, even if the rules in the main .htaccess are changed by mistake
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Deny from all
+</IfModule>

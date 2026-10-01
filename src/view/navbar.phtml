@@ -1,27 +1,19 @@
-    <div id="header" style="position:relative;">
-        <nav class="navbar">
-          <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="#">NAVITEM 1</a>
-                    <ul class="dropdown">
-                        <li><a href="#">DROPDOWN 1</a></li>
-                        <li><a href="#">DROPDOWN 2</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="#">NAVITEM 2</a>
-                    <ul class="dropdown">
-                        <li><a href="#">DROPDOWN 1</a></li>
-                        <li><a href="#">DROPDOWN 2</a></li>
-                        <li><a href="#">DROPDOWN 3</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="#">NAVITEM 3</a>
-                    <ul class="dropdown">
-                    </ul>
-                </li>
+<?php
+// the menu comes from 'nav' in config/site.php
+$current = trim($this->myrequest->getPath(), '/');
+$items = Config::get('site.nav', []);
+?>
+<header class="site-header">
+    <div class="container header-inner">
+        <a class="brand" href="/"><?= e(Config::get('site.name', '')) ?></a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><?= e(t('nav.menu')) ?></button>
+        <nav id="site-nav" class="site-nav" aria-label="<?= e(t('nav.menu')) ?>">
+            <ul class="nav-list">
+<?php foreach (is_array($items) ? $items : [] as $item): ?>
+<?php if (empty($item['label']) || empty($item['url'])) { continue; } ?>
+                <li><a href="<?= e($item['url']) ?>"<?= trim($item['url'], '/') === $current ? ' aria-current="page"' : '' ?>><?= e(t($item['label'])) ?></a></li>
+<?php endforeach; ?>
             </ul>
         </nav>
     </div>
-    
+</header>

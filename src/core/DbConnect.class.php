@@ -12,6 +12,7 @@ class dbConnect
     private static $pdo = null;     //one shared connection for the whole request
 
     //connect to server with pdo
+    //the credentials are in the [database] section of config/config.ini. a website without a database doesn't need them
 
     public function connect()
     {
@@ -19,14 +20,13 @@ class dbConnect
             return self::$pdo;
         }
 
-        $config = BASEPATH . '/config/config.ini';
-        $dbData = file_exists($config) ? parse_ini_file($config) : false;
-        if (!$dbData) {
-            throw new RuntimeException("No database data available. Copy config/config.example.ini to config/config.ini and fill it in.");
+        $dbData = Config::get('database');
+        if (!is_array($dbData)) {
+            throw new RuntimeException("No database data available. Copy config/config.example.ini to config/config.ini and fill in the [database] section.");
         }
         foreach (['servername', 'username', 'password', 'database'] as $key) {
             if (!isset($dbData[$key])) {
-                throw new RuntimeException("Missing '$key' in config/config.ini");
+                throw new RuntimeException("Missing '$key' in the [database] section of config/config.ini");
             }
         }
 

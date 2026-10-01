@@ -1,0 +1,54 @@
+<?php
+// TEMPLATE, not legal advice. It matches the website as it is delivered: one technically necessary session cookie, no tracking,
+// no external fonts, maps or videos, a contact form that sends e-mail.
+// As soon as something is added (analytics, Google Maps, YouTube, newsletter, shop, login, ...) the text has to be extended and
+// usually consent (cookie banner) is needed. Have it checked before going live.
+// The data comes from 'business' in config/site.php.
+?>
+<section class="container section prose">
+    <h1>Privacy policy</h1>
+
+    <h2>1. Controller</h2>
+    <p>
+        <?= e(biz('name')) ?><br>
+        <?= e(biz('street')) ?>, <?= e(trim(biz('zip') . ' ' . biz('city'))) ?><br>
+<?php if (biz('phone') !== ''): ?>
+        Phone: <?= e(biz('phone')) ?><br>
+<?php endif; ?>
+        E-mail: <?= e(biz('email')) ?>
+    </p>
+
+    <h2>2. Hosting and server log files</h2>
+    <p>
+        When you open this website the web server automatically processes technical data: IP address, date and time,
+        requested page, amount of data sent, browser and operating system. This is necessary to run the website securely and
+        reliably (Art. 6(1)(f) GDPR). The data is deleted after a short time unless longer storage is needed for security reasons.
+<?php if (biz('hosting') !== ''): ?>
+        The website is hosted by: <?= e(biz('hosting')) ?>.
+<?php endif; ?>
+    </p>
+
+    <h2>3. Contact form and e-mail</h2>
+    <p>
+        If you write to us through the contact form or by e-mail we process your name, e-mail address, an optional phone number
+        and your message to answer your request (Art. 6(1)(b) or (f) GDPR). We do not pass the data on. We delete it when
+        your request is dealt with and no legal retention duty applies.
+    </p>
+    <p>
+        To protect against abuse (spam) a hash (pseudonym) of your IP address is stored for at most 24 hours when you send
+        the form, to limit the number of messages per visitor (Art. 6(1)(f) GDPR).
+    </p>
+
+    <h2>4. Cookies</h2>
+    <p>
+        This website only uses one technically necessary session cookie. It protects the contact form against forged requests
+        and is deleted when you close the browser. No consent is required for it. No cookies are set for analytics or advertising.
+    </p>
+
+    <h2>5. Your rights</h2>
+    <p>
+        You have the right of access (Art. 15 GDPR), rectification (Art. 16), erasure (Art. 17), restriction of processing
+        (Art. 18), data portability (Art. 20) and to object (Art. 21). Contact us at the address above. You can also complain to
+        a data protection supervisory authority.
+    </p>
+</section>
