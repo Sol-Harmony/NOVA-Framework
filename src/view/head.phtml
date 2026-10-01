@@ -1,11 +1,39 @@
+<?php
+$noindex = $this->isNoindex();
+$canonical = $noindex ? '' : Seo::absolute($this->canonicalPath());
+$image = Seo::absolute((string) Config::get('site.image', ''));
+$jsonLd = $noindex ? '' : Seo::jsonLd();
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= e(Lang::code()) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
-    <title>Head Title from Navbar</title>
-    <script src="/src/scripts/jquery-3.7.1.js"></script>
-    <script src="/src/scripts/main.js"></script>
+    <title><?= e($this->pageTitle()) ?></title>
+<?php if ($this->pageDescription() !== ''): ?>
+    <meta name="description" content="<?= e($this->pageDescription()) ?>">
+    <meta property="og:description" content="<?= e($this->pageDescription()) ?>">
+<?php endif; ?>
+    <meta property="og:title" content="<?= e($this->pageTitle()) ?>">
+    <meta property="og:site_name" content="<?= e(Config::get('site.name', '')) ?>">
+    <meta property="og:type" content="website">
+<?php if ($canonical !== ''): ?>
+    <link rel="canonical" href="<?= e($canonical) ?>">
+    <meta property="og:url" content="<?= e($canonical) ?>">
+<?php endif; ?>
+<?php if ($image !== ''): ?>
+    <meta property="og:image" content="<?= e($image) ?>">
+    <meta name="twitter:card" content="summary_large_image">
+<?php endif; ?>
+<?php if ($noindex): ?>
+    <meta name="robots" content="noindex">
+<?php endif; ?>
+    <link rel="stylesheet" href="<?= e(asset('/assets/theme.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('/assets/style.css')) ?>">
+    <script src="<?= e(asset('/src/scripts/main.js')) ?>" defer></script>
+<?php if ($jsonLd !== ''): ?>
+    <script type="application/ld+json"><?= $jsonLd ?></script>
+<?php endif; ?>
 </head>
-<body>
+<body<?= biz('phone') !== '' ? ' class="has-call-bar"' : '' ?>>
+<a class="skip-link" href="#main"><?= e(t('skip')) ?></a>

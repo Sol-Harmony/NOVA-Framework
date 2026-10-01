@@ -1,0 +1,46 @@
+<?php
+// VORLAGE, keine Rechtsberatung. Welche Angaben Pflicht sind, hängt vom Unternehmen ab (Rechtsform, Handelsregister,
+// Kammern, reglementierte Berufe, ...). Vor dem Livegang mit dem Kunden prüfen, ggf. Anwalt oder Generator nutzen.
+// Die Daten kommen aus 'business' in config/site.php, leere Felder werden weggelassen.
+?>
+<section class="container section prose">
+    <h1>Impressum</h1>
+
+    <h2>Angaben gemäß § 5 DDG</h2>
+    <p>
+        <?= e(biz('name')) ?><br>
+<?php if (biz('owner') !== ''): ?>
+        Inhaber / Vertretungsberechtigt: <?= e(biz('owner')) ?><br>
+<?php endif; ?>
+        <?= e(biz('street')) ?><br>
+        <?= e(trim(biz('zip') . ' ' . biz('city'))) ?><?= biz('country') !== '' ? '<br>' . e(biz('country')) : '' ?>
+    </p>
+
+    <h2>Kontakt</h2>
+    <p>
+<?php if (biz('phone') !== ''): ?>
+        Telefon: <?= e(biz('phone')) ?><br>
+<?php endif; ?>
+<?php if (biz('email') !== ''): ?>
+        E-Mail: <a href="mailto:<?= e(biz('email')) ?>"><?= e(biz('email')) ?></a>
+<?php endif; ?>
+    </p>
+
+<?php if (biz('register') !== ''): ?>
+    <h2>Registereintrag</h2>
+    <p><?= e(biz('register')) ?></p>
+<?php endif; ?>
+
+<?php if (biz('vat_id') !== ''): ?>
+    <h2>Umsatzsteuer-ID</h2>
+    <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz: <?= e(biz('vat_id')) ?></p>
+<?php endif; ?>
+
+<?php if (biz('responsible') !== ''): ?>
+    <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+    <p><?= e(biz('responsible')) ?></p>
+<?php endif; ?>
+
+    <h2>Verbraucherstreitbeilegung</h2>
+    <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+</section>

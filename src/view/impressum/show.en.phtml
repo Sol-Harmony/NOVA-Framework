@@ -1,0 +1,43 @@
+<?php
+// TEMPLATE, not legal advice. Which details are required depends on the business and the country (legal form, trade register,
+// chambers, regulated professions, ...). Check it with the client before going live.
+// The data comes from 'business' in config/site.php, empty fields are left out.
+?>
+<section class="container section prose">
+    <h1>Legal notice</h1>
+
+    <h2>Provider</h2>
+    <p>
+        <?= e(biz('name')) ?><br>
+<?php if (biz('owner') !== ''): ?>
+        Owner / represented by: <?= e(biz('owner')) ?><br>
+<?php endif; ?>
+        <?= e(biz('street')) ?><br>
+        <?= e(trim(biz('zip') . ' ' . biz('city'))) ?><?= biz('country') !== '' ? '<br>' . e(biz('country')) : '' ?>
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+<?php if (biz('phone') !== ''): ?>
+        Phone: <?= e(biz('phone')) ?><br>
+<?php endif; ?>
+<?php if (biz('email') !== ''): ?>
+        E-mail: <a href="mailto:<?= e(biz('email')) ?>"><?= e(biz('email')) ?></a>
+<?php endif; ?>
+    </p>
+
+<?php if (biz('register') !== ''): ?>
+    <h2>Commercial register</h2>
+    <p><?= e(biz('register')) ?></p>
+<?php endif; ?>
+
+<?php if (biz('vat_id') !== ''): ?>
+    <h2>VAT ID</h2>
+    <p><?= e(biz('vat_id')) ?></p>
+<?php endif; ?>
+
+<?php if (biz('responsible') !== ''): ?>
+    <h2>Responsible for the content</h2>
+    <p><?= e(biz('responsible')) ?></p>
+<?php endif; ?>
+</section>

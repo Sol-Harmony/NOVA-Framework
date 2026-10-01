@@ -1,0 +1,49 @@
+/* THEME of this website: colors, fonts and shapes.
+   This is the file to change for every new client. style.css only uses these variables. */
+:root {
+    /* brand */
+    --color-primary: #02500e;           /* header, buttons, links */
+    --color-primary-dark: #0c301a;      /* hover state, footer */
+    --color-on-primary: #f2ecd6;        /* text on top of the primary color */
+
+    /* page */
+    --color-bg: #faf8f1;
+    --color-surface: #ffffff;           /* cards, form fields */
+    --color-text: #1d2b22;
+    --color-muted: #5b6a60;
+    --color-border: #d9d6c8;
+
+    /* messages */
+    --color-error: #b3261e;
+    --color-error-bg: #fdecea;
+    --color-success: #1b6e2f;
+    --color-success-bg: #e8f5ea;
+
+    /* typography: system fonts load instantly and need no cookie consent (Google Fonts would) */
+    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-heading: var(--font-body);
+
+    /* shape */
+    --radius: 6px;
+    --max-width: 1100px;
+    --header-height: 64px;
+
+    /* start page: picture in /pictures and the darkening layer on top of it that keeps the text readable */
+    --hero-image: url('/pictures/home/home1.webp');
+    --hero-overlay: rgba(2, 40, 10, 0.55);
+
+    /* scroll story on the start page: one picture per step (1920 px wide, under 300 KB: save as webp or jpg), the light layer on
+       top of it, and the background of the text card */
+    --story-image-1: url('/pictures/home/home2.webp');
+    --story-image-2: url('/pictures/home/home3.webp');
+    --story-image-3: url('/pictures/home/home4.webp');
+    /* which part of the picture stays visible when the screen is narrower than the picture (phones): where the subject is */
+    --story-position-1: center;
+    --story-position-2: center;
+    --story-position-3: center;
+    --story-overlay: rgba(0, 0, 0, 0.5);        /* dark shade over the pictures: 0 = none, 1 = black */
+
+    /* transparent "glass" behind text blocks that lie on pictures */
+    --glass-bg: rgba(8, 24, 14, 0.18);
+    --glass-border: rgba(255, 255, 255, 0.22);
+}

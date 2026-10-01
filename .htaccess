@@ -1,11 +1,37 @@
 RewriteEngine ON
 
-# block direct access to the config, the php source, the nova terminal script and dotfiles (.git, .gitignore, .htaccess)
+# block direct access to the config, the php source, the storage folder (logs, sessions, saved messages), the nova terminal
+# script, text files of the project and dotfiles (.git, .gitignore, .htaccess)
 # src/scripts stays public because the views load their js from there
 RewriteRule ^nova$ - [F,L]
 RewriteRule ^config(/|$) - [F,L]
+RewriteRule ^storage(/|$) - [F,L]
 RewriteRule ^src(/(?!scripts/)|$) - [F,L]
+RewriteRule \.(md|ini|log|sql|bak)$ - [F,L]
 RewriteRule (^|/)\.(?!well-known/) - [F,L]
+
+# after the website is live on https, remove the # in front of the next three lines
+# RewriteCond %{HTTPS} !=on
+# RewriteCond %{HTTP:X-Forwarded-Proto} !https
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)? index.php [L]
+
+# smaller downloads
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+# css, js and images are linked with ?v=<change time> (see asset()), so they can be kept for a long time
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 month"
+</IfModule>

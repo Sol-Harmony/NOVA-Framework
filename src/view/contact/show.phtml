@@ -1,0 +1,93 @@
+<?php
+$errors = $this->data['errors'];
+$old = $this->data['old'];
+$hours = Config::get('site.business.hours', []);
+?>
+<section class="container section">
+    <h1><?= e(t('contact.title')) ?></h1>
+    <p class="lead"><?= e(t('contact.intro')) ?></p>
+
+<?php if ($this->data['sent']): ?>
+    <div class="alert alert-success" role="status"><?= e(t('contact.success')) ?></div>
+<?php endif; ?>
+<?php if ($this->data['failed']): ?>
+    <div class="alert alert-error" role="alert"><?= e(t('contact.failed', ['email' => biz('email')])) ?></div>
+<?php endif; ?>
+<?php if ($errors): ?>
+    <div class="alert alert-error" role="alert">
+        <strong><?= e(t('contact.errors_title')) ?></strong>
+        <ul>
+<?php foreach ($errors as $error): ?>
+            <li><?= e($error) ?></li>
+<?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
+
+    <div class="contact-grid">
+        <form class="form" method="post" action="<?= e(route('contact', 'send')) ?>">
+            <?= csrf_field() ?>
+
+            <div class="form-row<?= isset($errors['name']) ? ' has-error' : '' ?>">
+                <label for="name"><?= e(t('contact.name')) ?></label>
+                <input type="text" id="name" name="name" value="<?= e($old['name'] ?? '') ?>" maxlength="100" autocomplete="name" required>
+            </div>
+
+            <div class="form-row<?= isset($errors['email']) ? ' has-error' : '' ?>">
+                <label for="email"><?= e(t('contact.email')) ?></label>
+                <input type="email" id="email" name="email" value="<?= e($old['email'] ?? '') ?>" maxlength="254" autocomplete="email" required>
+            </div>
+
+            <div class="form-row<?= isset($errors['phone']) ? ' has-error' : '' ?>">
+                <label for="phone"><?= e(t('contact.phone')) ?></label>
+                <input type="tel" id="phone" name="phone" value="<?= e($old['phone'] ?? '') ?>" maxlength="40" autocomplete="tel">
+            </div>
+
+            <div class="form-row<?= isset($errors['message']) ? ' has-error' : '' ?>">
+                <label for="message"><?= e(t('contact.message')) ?></label>
+                <textarea id="message" name="message" rows="7" maxlength="3000" required><?= e($old['message'] ?? '') ?></textarea>
+            </div>
+
+            <!-- honeypot: hidden for people (see .hp in style.css), bots fill it in -->
+            <div class="hp" aria-hidden="true">
+                <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+            </div>
+
+            <p class="form-note">
+                <?= e(t('contact.privacy_before')) ?>
+                <a href="<?= e(route('privacy')) ?>"><?= e(t('contact.privacy_link')) ?></a>.
+            </p>
+
+            <button class="btn" type="submit"><?= e(t('contact.send')) ?></button>
+        </form>
+
+        <aside class="contact-info">
+<?php if (biz('street') !== '' || biz('city') !== ''): ?>
+            <h2><?= e(t('contact.address')) ?></h2>
+            <address>
+                <?= e(biz('name') ?: Config::get('site.name', '')) ?><br>
+                <?= e(biz('street')) ?><br>
+                <?= e(trim(biz('zip') . ' ' . biz('city'))) ?>
+            </address>
+<?php if (Utils::mapUrl() !== ''): ?>
+            <p><a href="<?= e(Utils::mapUrl()) ?>" target="_blank" rel="noopener noreferrer"><?= e(t('contact.route')) ?></a></p>
+<?php endif; ?>
+<?php endif; ?>
+<?php if (biz('phone') !== ''): ?>
+            <p><?= e(t('contact.phone_label')) ?>: <a href="tel:<?= e(preg_replace('/[^0-9+]/', '', biz('phone'))) ?>"><?= e(biz('phone')) ?></a></p>
+<?php endif; ?>
+<?php if (biz('email') !== ''): ?>
+            <p><?= e(t('contact.email')) ?>: <a href="mailto:<?= e(biz('email')) ?>"><?= e(biz('email')) ?></a></p>
+<?php endif; ?>
+<?php if (is_array($hours) && $hours): ?>
+            <h2><?= e(t('footer.hours')) ?></h2>
+            <dl class="hours">
+<?php foreach ($hours as $row): ?>
+                <dt><?= e($row[0] ?? '') ?></dt>
+                <dd><?= e($row[1] ?? '') ?></dd>
+<?php endforeach; ?>
+            </dl>
+<?php endif; ?>
+        </aside>
+    </div>
+</section>

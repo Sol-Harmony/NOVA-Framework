@@ -1,0 +1,58 @@
+<?php
+// VORLAGE, keine Rechtsberatung. Sie passt zu der Website so, wie sie ausgeliefert wird: nur ein technisch notwendiges
+// Sitzungs-Cookie, kein Tracking, keine externen Schriften, Karten oder Videos, Kontaktformular per E-Mail.
+// Sobald etwas dazukommt (Analytics, Google Maps, YouTube, Newsletter, Shop, Login, ...) muss der Text ergänzt und
+// meist eine Einwilligung (Cookie-Banner) eingeholt werden. Vor dem Livegang prüfen lassen.
+// Die Daten kommen aus 'business' in config/site.php.
+?>
+<section class="container section prose">
+    <h1>Datenschutzerklärung</h1>
+
+    <h2>1. Verantwortlicher</h2>
+    <p>
+        <?= e(biz('name')) ?><br>
+        <?= e(biz('street')) ?>, <?= e(trim(biz('zip') . ' ' . biz('city'))) ?><br>
+<?php if (biz('phone') !== ''): ?>
+        Telefon: <?= e(biz('phone')) ?><br>
+<?php endif; ?>
+        E-Mail: <?= e(biz('email')) ?>
+    </p>
+
+    <h2>2. Hosting und Server-Logfiles</h2>
+    <p>
+        Beim Aufruf dieser Website verarbeitet der Webserver automatisch technische Daten: IP-Adresse, Datum und Uhrzeit,
+        aufgerufene Seite, übertragene Datenmenge sowie Browser und Betriebssystem. Das ist für den sicheren und stabilen
+        Betrieb der Website erforderlich (Art. 6 Abs. 1 lit. f DSGVO). Die Daten werden nach kurzer Zeit gelöscht,
+        sofern keine längere Speicherung aus Sicherheitsgründen nötig ist.
+<?php if (biz('hosting') !== ''): ?>
+        Die Website wird betrieben bei: <?= e(biz('hosting')) ?>. Mit dem Anbieter besteht ein Vertrag zur Auftragsverarbeitung.
+<?php endif; ?>
+    </p>
+
+    <h2>3. Kontaktformular und E-Mail</h2>
+    <p>
+        Wenn Sie uns über das Kontaktformular oder per E-Mail schreiben, verarbeiten wir Ihren Namen, Ihre E-Mail-Adresse,
+        eine optionale Telefonnummer und Ihre Nachricht, um Ihre Anfrage zu beantworten (Art. 6 Abs. 1 lit. b bzw. lit. f DSGVO).
+        Die Daten geben wir nicht weiter. Wir löschen sie, sobald Ihre Anfrage erledigt ist und keine gesetzlichen
+        Aufbewahrungspflichten bestehen.
+    </p>
+    <p>
+        Zum Schutz vor Missbrauch (Spam) wird beim Absenden des Formulars ein Hashwert (Pseudonym) Ihrer IP-Adresse
+        höchstens 24 Stunden gespeichert, um die Zahl der Nachrichten pro Besucher zu begrenzen (Art. 6 Abs. 1 lit. f DSGVO).
+    </p>
+
+    <h2>4. Cookies</h2>
+    <p>
+        Diese Website verwendet ausschließlich ein technisch notwendiges Sitzungs-Cookie. Es schützt das Kontaktformular
+        vor gefälschten Anfragen und wird beim Schließen des Browsers gelöscht. Dafür ist nach § 25 Abs. 2 Nr. 2 TDDDG
+        keine Einwilligung erforderlich. Es werden keine Cookies zu Analyse- oder Werbezwecken gesetzt.
+    </p>
+
+    <h2>5. Ihre Rechte</h2>
+    <p>
+        Sie haben das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der
+        Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) und Widerspruch (Art. 21). Wenden Sie sich dazu an die
+        oben genannte Adresse. Außerdem können Sie sich bei einer Datenschutz-Aufsichtsbehörde beschweren, in der Regel
+        bei der Behörde Ihres Bundeslandes.
+    </p>
+</section>

@@ -4,6 +4,8 @@
 /**
  * Terminal commands of the framework. Run from the project folder:
  *   php nova make Product
+ *   php nova check
+ *   php nova mail:test you@example.com
  *   php nova help
  **/
 
@@ -12,10 +14,6 @@ if (PHP_SAPI !== 'cli') {    //only from the terminal, never through the web ser
 }
 
 define("BASEPATH", __DIR__);
-define("DEBUG", true);
-
-include(BASEPATH . '/src/core/Autoloader.php');
-$autoloader = new Autoloader(BASEPATH);
-$autoloader->trigger();
+require BASEPATH . '/src/bootstrap.php';
 
 exit((new Console(BASEPATH))->run($argv));

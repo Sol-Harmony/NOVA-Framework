@@ -1,0 +1,23 @@
+<section class="container section">
+    <h1><?= e(t('services.title')) ?></h1>
+    <p class="lead"><?= e(t('services.intro')) ?></p>
+
+<?php if ($this->data['items']): ?>
+    <div class="card-grid">
+<?php foreach ($this->data['items'] as $item): ?>
+<?php if (!is_array($item) || empty($item['title'])) { continue; } ?>
+        <article class="card">
+            <h2><?= e($item['title']) ?></h2>
+<?php if (!empty($item['text'])): ?>
+            <p><?= e($item['text']) ?></p>
+<?php endif; ?>
+<?php if (!empty($item['price'])): ?>
+            <p class="price"><?= e($item['price']) ?></p>
+<?php endif; ?>
+        </article>
+<?php endforeach; ?>
+    </div>
+<?php endif; ?>
+
+    <p class="section-cta"><a class="btn" href="<?= e(route('contact')) ?>"><?= e(t('services.cta')) ?></a></p>
+</section>
