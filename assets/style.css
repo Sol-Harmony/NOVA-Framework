@@ -5,22 +5,24 @@ html {
 }
 
 button {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(16, 117, 29, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 3px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(1px);
     -webkit-backdrop-filter: blur(1px);
-    color: #222;
+    color: #f2ecd6;
     padding: 0.5em 1.2em;
     font-size: 1em;
+    font-weight: bold;
+    font-family: Helvetica, Arial, sans-serif;
     transition: background 0.2s, color 0.2s;
     cursor: pointer;
 }
 
 button:hover {
     background: rgba(255, 255, 255, 0.35);
-    color: #000;
+    color: #0c301a;
 }
 body {
     margin: 0;
@@ -29,7 +31,9 @@ body {
     align-items: center;
     overflow: hidden;
     text-align: center;
-    background-image: url('../pictures/pixel-lakes-hut.jpg');
+    color: #f2ecd6;
+    font-family: Helvetica, Arial, sans-serif;
+    background-image: url('../pictures/home.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -90,9 +94,8 @@ body {
     }
 }
 
-/* navbar (moved here from navbar.phtml) */
 .navbar {
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(16, 117, 29, 0.25);
     padding: 10px 0;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     /* backdrop-filter: blur(2px);
@@ -114,7 +117,7 @@ body {
 
 .nav-list a {
     text-decoration: none;
-    color: white;
+    color: #f2ecd6;
     font-size: 18px;
     font-weight: bold;
     padding: 8px 16px;
@@ -123,19 +126,21 @@ body {
 }
 
 .nav-list a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.35);
+    color: #0c301a;
 }
 
 .dropdown {
     list-style: none;
     position: absolute;
     top: 100%;
-    left: 0;
-    background-color: #59a700ff;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(2, 110, 16, 0.8);
     padding: 0;
     margin: 0;
-    min-width: 160px;
+    min-width: 100%;
+    white-space: nowrap;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     display: none;
@@ -149,13 +154,14 @@ body {
 .dropdown li a {
     display: block;
     padding: 10px;
-    color: white;
+    color: #f2ecd6;
     text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(16, 117, 29, 0.25);
 }
 
 .dropdown li a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.35);
+    color: #0c301a;
 }
 
 .nav-item:hover .dropdown {

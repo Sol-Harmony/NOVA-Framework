@@ -1,7 +1,6 @@
 <div style="margin-top:0;">
-    <h1 style="color:white;">NOVA</h1>
-    <button id="loadDataBtn" style="color:white;">Ajax</button>
-    <div id="result" style="margin-top: 1rem; color: white;"></div>
+    <button id="loadDataBtn" style="margin-top:6em;">AJAX</button>
+    <div id="result"></div>
 </div>
 <script>
     let eventWithTimeout;
@@ -21,8 +20,8 @@
                 dataType: "json",
                 success: function(data) {
                     jQuery("#result").html(`
-                    <h3>${data.message}</h3>
-                    <h3>${data.timestamp}</h3>
+                    <h4>${data.message}</h4>
+                    <h4>${data.timestamp}</h4>
                 `);
                     clearResultAfterDelay();
                 },
