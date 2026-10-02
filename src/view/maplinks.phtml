@@ -1,0 +1,13 @@
+<?php
+// "Get directions: Google Maps · Apple Maps" for the business address. Included with $this->partial('maplinks')
+$links = Utils::mapLinks();
+if (!$links) {
+    return;
+}
+?>
+            <p class="map-links">
+                <?= e(t('contact.route')) ?>:
+<?php foreach ($links as $label => $url): ?>
+                <a href="<?= e($url) ?>" target="_blank" rel="noopener noreferrer"><?= e($label) ?></a>
+<?php endforeach; ?>
+            </p>

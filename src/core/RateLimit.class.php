@@ -24,7 +24,7 @@ class RateLimit     //limits how often something can be done, e.g. 5 contact mes
             return true;
         }
 
-        $handle = fopen($dir . '/' . hash('sha256', $key) . '.json', 'c+');
+        $handle = fopen($dir . '/' . self::fileKey($dir, $key) . '.json', 'c+');
         if ($handle === false) {
             return true;
         }
@@ -53,6 +53,19 @@ class RateLimit     //limits how often something can be done, e.g. 5 contact mes
             self::cleanup($dir);
         }
         return $allowed;
+    }
+
+    //name of the file of a visitor. a plain hash of an IP address can be guessed (there are only 4 billion of them), so the hash
+    //includes a secret that is created once and never leaves the server: nobody can get an IP address out of the file names
+    private static function fileKey($dir, $key)
+    {
+        $saltFile = $dir . '/.salt';
+        $salt = is_file($saltFile) ? (string) @file_get_contents($saltFile) : '';
+        if (strlen($salt) < 32) {
+            $salt = bin2hex(random_bytes(32));
+            @file_put_contents($saltFile, $salt, LOCK_EX);
+        }
+        return hash_hmac('sha256', $key, $salt);
     }
 
     private static function cleanup($dir)

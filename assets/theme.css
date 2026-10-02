@@ -2,12 +2,12 @@
    This is the file to change for every new client. style.css only uses these variables. */
 :root {
     /* brand */
-    --color-primary: #02500e;           /* header, buttons, links */
-    --color-primary-dark: #0c301a;      /* hover state, footer */
-    --color-on-primary: #f2ecd6;        /* text on top of the primary color */
+    --color-primary: #33812c;           /* header, buttons, links */
+    --color-primary-dark: #0b3018;      /* hover state, footer */
+    --color-on-primary: #faf7e8;        /* text on top of the primary color */
 
     /* page */
-    --color-bg: #faf8f1;
+    --color-bg: #faf7e8;
     --color-surface: #ffffff;           /* cards, form fields */
     --color-text: #1d2b22;
     --color-muted: #5b6a60;
@@ -27,10 +27,11 @@
     --radius: 6px;
     --max-width: 1100px;
     --header-height: 64px;
+    --bar-opacity: 98%;                 /* header, footer and "any questions" band: how strong the green is. 100% = solid, 60% = more picture */
 
     /* start page: picture in /pictures and the darkening layer on top of it that keeps the text readable */
     --hero-image: url('/pictures/home/home1.webp');
-    --hero-overlay: rgba(2, 40, 10, 0.55);
+    --hero-overlay: rgba(2, 40, 10, 0.4);
 
     /* scroll story on the start page: one picture per step (1920 px wide, under 300 KB: save as webp or jpg), the light layer on
        top of it, and the background of the text card */
@@ -41,9 +42,12 @@
     --story-position-1: center;
     --story-position-2: center;
     --story-position-3: center;
-    --story-overlay: rgba(0, 0, 0, 0.5);        /* dark shade over the pictures: 0 = none, 1 = black */
+    --story-overlay: rgba(0, 0, 0, 0.4);        /* dark shade over the pictures: 0 = none, 1 = black */
 
-    /* transparent "glass" behind text blocks that lie on pictures */
-    --glass-bg: rgba(8, 24, 14, 0.18);
-    --glass-border: rgba(255, 255, 255, 0.22);
+    /* text blocks on pictures: a darker shade behind the text, no border. 0 = invisible, 1 = black */
+    --block-bg: rgba(0, 0, 0, 0.45);
+    --block-feather: 18px;              /* how soft the edges are: 0 = hard edge, 30px = very soft */
+
+    /* soft shadow that keeps the text readable on top of the picture */
+    --text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65), 0 1px 3px rgba(0, 0, 0, 0.5);
 }

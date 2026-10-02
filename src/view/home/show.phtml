@@ -2,7 +2,7 @@
     <div class="story-bg"></div>
     <div class="container">
         <h1><?= e(Config::get('site.name', '')) ?></h1>
-        <p class="hero-tagline"><?= e(Config::get('site.tagline', '')) ?></p>
+        <p class="hero-tagline"><?= e(Config::text('site.tagline')) ?></p>
         <a class="btn btn-light" href="<?= e(route('contact')) ?>"><?= e(t('home.cta')) ?></a>
     </div>
 </section>
@@ -15,7 +15,7 @@
 
         <div class="card-grid">
             <?php foreach ([1, 2, 3] as $n): ?>
-            <article class="card">
+            <article class="card reveal">
                 <h3><?= e(t('home.card' . $n . '_title')) ?></h3>
                 <p><?= e(t('home.card' . $n . '_text')) ?></p>
             </article>
@@ -36,7 +36,7 @@ $steps = [1 => 'left', 2 => 'right', 3 => 'left'];
     <article class="story-panel story-<?= (int) $n ?> story-<?= e($side) ?>">
         <div class="story-bg"></div>
         <div class="container">
-            <div class="story-card">
+            <div class="story-card reveal">
                 <h3><?= e(t('story.' . $n . '_title')) ?></h3>
                 <p><?= e(t('story.' . $n . '_text')) ?></p>
             </div>
@@ -46,6 +46,7 @@ $steps = [1 => 'left', 2 => 'right', 3 => 'left'];
 </section>
 
 <section class="cta-band">
+    <div class="story-bg"></div>
     <div class="container">
         <h2><?= e(t('home.bottom_title')) ?></h2>
         <p><?= e(t('home.bottom_text')) ?></p>

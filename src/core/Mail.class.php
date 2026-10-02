@@ -25,7 +25,7 @@ class Mail      //sends plain text mails through an SMTP server ([mail] in confi
 
         try {
             $from = Config::get('mail.from_address') ?: (Config::get('mail.username') ?: Config::get('site.business.email'));
-            $fromName = Config::get('mail.from_name') ?: Config::get('site.name', '');
+            $fromName = Config::get('site.name', '');
 
             $from = self::address($from, 'mail.from_address');
             $to = self::address($to, 'recipient');
@@ -58,6 +58,31 @@ class Mail      //sends plain text mails through an SMTP server ([mail] in confi
             self::$lastError = $th->getMessage();
             error_log('Mail failed: ' . $th->getMessage());
             return false;
+        }
+    }
+
+    //for a mail the server refused: never lose it, keep a copy in storage/outbox/<date>-<random>.txt where the owner can find it
+    //(storage/ is not reachable from the web). any form can use this, not only the contact form
+    public static function saveCopy($subject, $body)
+    {
+        $dir = BASEPATH . '/storage/outbox';
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0775, true);
+        }
+        self::purgeOutbox();
+        $file = $dir . '/' . date('Ymd-His') . '-' . bin2hex(random_bytes(4)) . '.txt';
+        if (@file_put_contents($file, $subject . "\n\n" . $body) === false) {
+            error_log("Mail: message could not be sent and could not be saved either:\n" . $subject . "\n" . $body);
+        }
+    }
+
+    //saved messages contain personal data, so they are not kept forever: files older than $days days are deleted
+    public static function purgeOutbox($days = 30)
+    {
+        foreach (glob(BASEPATH . '/storage/outbox/*.txt') ?: [] as $file) {
+            if (is_file($file) && filemtime($file) < time() - $days * 86400) {
+                @unlink($file);
+            }
         }
     }
 

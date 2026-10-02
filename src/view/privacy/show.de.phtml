@@ -3,12 +3,27 @@
 // Sitzungs-Cookie, kein Tracking, keine externen Schriften, Karten oder Videos, Kontaktformular per E-Mail.
 // Sobald etwas dazukommt (Analytics, Google Maps, YouTube, Newsletter, Shop, Login, ...) muss der Text ergänzt und
 // meist eine Einwilligung (Cookie-Banner) eingeholt werden. Vor dem Livegang prüfen lassen.
-// Die Daten kommen aus 'business' in config/site.php.
+//
+// Die Angaben kommen aus config/site.php: 'business' (Verantwortlicher, Hoster) und 'privacy' (Log-Dauer, Mail-Anbieter,
+// Datenschutzbeauftragter). Sie müssen für diese Website STIMMEN. Vor dem Livegang prüfen:
+//  - Vertrag zur Auftragsverarbeitung (Art. 28 DSGVO) mit dem Hoster und dem Mail-Anbieter abgeschlossen?
+//  - Wie lange speichert der Hoster Logfiles? Das gehört in 'privacy' => 'log_days'.
+//  - Sitzen Hoster oder Mail-Anbieter außerhalb der EU/des EWR? Dann Abschnitt "Empfänger" ergänzen (Drittlandübermittlung).
+//  - Läuft die Website über https? Ohne https stimmt der Absatz zur Verschlüsselung nicht.
+$privacy = Config::get('site.privacy', []);
+$privacy = is_array($privacy) ? $privacy : [];
+$logDays = max(1, (int) ($privacy['log_days'] ?? 7));
+$mailProvider = trim((string) ($privacy['mail_provider'] ?? ''));
+$limitByIp = Config::bool('security.limit_by_ip', true);
+$mapLinks = Utils::mapLinks();
 ?>
 <section class="container section prose">
     <h1>Datenschutzerklärung</h1>
 
     <h2>1. Verantwortlicher</h2>
+    <p>
+        Verantwortlich für die Datenverarbeitung auf dieser Website im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:
+    </p>
     <p>
         <?= e(biz('name')) ?><br>
         <?= e(biz('street')) ?>, <?= e(trim(biz('zip') . ' ' . biz('city'))) ?><br>
@@ -20,39 +35,116 @@
 
     <h2>2. Hosting und Server-Logfiles</h2>
     <p>
-        Beim Aufruf dieser Website verarbeitet der Webserver automatisch technische Daten: IP-Adresse, Datum und Uhrzeit,
-        aufgerufene Seite, übertragene Datenmenge sowie Browser und Betriebssystem. Das ist für den sicheren und stabilen
-        Betrieb der Website erforderlich (Art. 6 Abs. 1 lit. f DSGVO). Die Daten werden nach kurzer Zeit gelöscht,
-        sofern keine längere Speicherung aus Sicherheitsgründen nötig ist.
-<?php if (biz('hosting') !== ''): ?>
-        Die Website wird betrieben bei: <?= e(biz('hosting')) ?>. Mit dem Anbieter besteht ein Vertrag zur Auftragsverarbeitung.
-<?php endif; ?>
+        Beim Aufruf dieser Website verarbeitet der Webserver automatisch technische Daten, die Ihr Browser übermittelt:
+        IP-Adresse, Datum und Uhrzeit des Aufrufs, aufgerufene Seite, übertragene Datenmenge, Statuscode sowie Browser und
+        Betriebssystem. Diese Verarbeitung ist erforderlich, um die Website auszuliefern und sicher und stabil zu betreiben
+        (Art. 6 Abs. 1 lit. f DSGVO, berechtigtes Interesse am sicheren Betrieb). Die Logfiles werden nach <?= e($logDays) ?>
+        Tagen gelöscht, sofern keine längere Speicherung zur Aufklärung eines Missbrauchs nötig ist. Eine Zusammenführung mit
+        anderen Daten findet nicht statt.
     </p>
+<?php if (biz('hosting') !== ''): ?>
+    <p>
+        Die Website wird betrieben bei: <?= e(biz('hosting')) ?>. Der Anbieter verarbeitet die Daten in unserem Auftrag;
+        mit ihm besteht ein Vertrag zur Auftragsverarbeitung (Art. 28 DSGVO).
+    </p>
+<?php endif; ?>
+<?php if (Utils::isHttps()): ?>
+    <p>
+        Die Übertragung zwischen Ihrem Browser und dieser Website ist per TLS verschlüsselt (erkennbar am Schloss-Symbol
+        und an „https“ in der Adresszeile).
+    </p>
+<?php endif; ?>
 
     <h2>3. Kontaktformular und E-Mail</h2>
     <p>
         Wenn Sie uns über das Kontaktformular oder per E-Mail schreiben, verarbeiten wir Ihren Namen, Ihre E-Mail-Adresse,
-        eine optionale Telefonnummer und Ihre Nachricht, um Ihre Anfrage zu beantworten (Art. 6 Abs. 1 lit. b bzw. lit. f DSGVO).
-        Die Daten geben wir nicht weiter. Wir löschen sie, sobald Ihre Anfrage erledigt ist und keine gesetzlichen
-        Aufbewahrungspflichten bestehen.
+        eine optionale Telefonnummer und den Inhalt Ihrer Nachricht, um Ihre Anfrage zu beantworten. Rechtsgrundlage ist
+        Art. 6 Abs. 1 lit. b DSGVO, wenn die Anfrage mit einem Vertrag oder vorvertraglichen Maßnahmen zusammenhängt,
+        sonst Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Beantwortung von Anfragen). Die Angabe von Name,
+        E-Mail-Adresse und Nachricht ist freiwillig, ohne sie können wir Ihre Anfrage aber nicht bearbeiten.
     </p>
     <p>
-        Zum Schutz vor Missbrauch (Spam) wird beim Absenden des Formulars ein Hashwert (Pseudonym) Ihrer IP-Adresse
-        höchstens 24 Stunden gespeichert, um die Zahl der Nachrichten pro Besucher zu begrenzen (Art. 6 Abs. 1 lit. f DSGVO).
-    </p>
-
-    <h2>4. Cookies</h2>
-    <p>
-        Diese Website verwendet ausschließlich ein technisch notwendiges Sitzungs-Cookie. Es schützt das Kontaktformular
-        vor gefälschten Anfragen und wird beim Schließen des Browsers gelöscht. Dafür ist nach § 25 Abs. 2 Nr. 2 TDDDG
-        keine Einwilligung erforderlich. Es werden keine Cookies zu Analyse- oder Werbezwecken gesetzt.
+        Die Daten werden per E-Mail an uns zugestellt<?php if ($mailProvider !== ''): ?>. Das Postfach wird betrieben von:
+        <?= e($mailProvider) ?>. Der Anbieter verarbeitet die Daten in unserem Auftrag (Art. 28 DSGVO)<?php endif; ?>.
+        Darüber hinaus geben wir die Daten nicht weiter. Wir löschen sie, sobald Ihre Anfrage erledigt ist und keine
+        gesetzlichen Aufbewahrungspflichten (z. B. für Geschäftsbriefe) bestehen. Kann eine Nachricht technisch nicht
+        zugestellt werden, wird sie auf dem Server zwischengespeichert und spätestens nach 30 Tagen automatisch gelöscht.
     </p>
 
-    <h2>5. Ihre Rechte</h2>
+    <h2>4. Schutz des Kontaktformulars vor Missbrauch</h2>
     <p>
-        Sie haben das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der
-        Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) und Widerspruch (Art. 21). Wenden Sie sich dazu an die
-        oben genannte Adresse. Außerdem können Sie sich bei einer Datenschutz-Aufsichtsbehörde beschweren, in der Regel
-        bei der Behörde Ihres Bundeslandes.
+        Um das Formular vor automatisierten Anfragen (Spam) zu schützen, setzen wir ein verstecktes Feld, eine Mindestzeit
+        zwischen Aufruf und Absenden sowie eine Obergrenze für die Zahl der Nachrichten pro Stunde ein
+        (Art. 6 Abs. 1 lit. f DSGVO, berechtigtes Interesse an der Sicherheit und Verfügbarkeit des Formulars).
+<?php if ($limitByIp): ?>
+        Dafür wird beim Absenden des Formulars ein Hashwert Ihrer IP-Adresse gespeichert. Er wird mit einem geheimen,
+        nur auf dem Server vorhandenen Schlüssel erzeugt, sodass sich daraus keine IP-Adresse zurückrechnen lässt, und
+        nach höchstens 24 Stunden gelöscht.
+<?php else: ?>
+        Dabei wird keine IP-Adresse gespeichert.
+<?php endif; ?>
+    </p>
+
+    <h2>5. Cookies und Speicherung auf Ihrem Gerät</h2>
+    <p>
+        Diese Website verwendet ausschließlich ein technisch notwendiges Sitzungs-Cookie. Es wird gesetzt, wenn Sie die
+        Kontaktseite aufrufen, schützt das Formular vor gefälschten Anfragen und enthält nur eine zufällige Kennung. Es
+        wird beim Schließen des Browsers gelöscht. Dafür ist nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung erforderlich;
+        die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO.
+    </p>
+    <p>
+        Es werden keine Cookies oder ähnlichen Technologien zu Analyse- oder Werbezwecken eingesetzt, und es werden keine
+        Inhalte von Drittanbietern (Schriften, Karten, Videos, Tracking-Dienste) nachgeladen. Ihre Sprachauswahl wird
+        nur in der Adresse der Seite („?lang=…“) weitergegeben und nicht auf Ihrem Gerät gespeichert.
+    </p>
+
+<?php if ($mapLinks || Config::get('site.social')): ?>
+    <h2>6. Links zu anderen Websites</h2>
+<?php if ($mapLinks): ?>
+    <p>
+        Die Links zur Routenplanung führen zu Google Maps (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4,
+        Irland) bzw. Apple Karten (Apple Distribution International Ltd., Hollyhill Industrial Estate, Cork, Irland).
+        Erst wenn Sie einen dieser Links anklicken, wird Ihre Anfrage an den jeweiligen Anbieter übertragen, der dabei
+        Daten wie Ihre IP-Adresse verarbeitet. Darauf haben wir keinen Einfluss; es gilt die Datenschutzerklärung des
+        Anbieters. Beim bloßen Aufruf dieser Website werden keine Daten an diese Anbieter übertragen.
+    </p>
+<?php endif; ?>
+<?php if (Config::get('site.social')): ?>
+    <p>
+        Die Links zu sozialen Netzwerken sind einfache Verweise. Erst wenn Sie darauf klicken, werden Daten an das jeweilige
+        Netzwerk übertragen; dafür gilt dessen Datenschutzerklärung.
+    </p>
+<?php endif; ?>
+<?php endif; ?>
+
+    <h2><?= ($mapLinks || Config::get('site.social')) ? '7' : '6' ?>. Empfänger, Drittländer und automatisierte Entscheidungen</h2>
+    <p>
+        Empfänger Ihrer Daten sind nur die oben genannten Dienstleister, soweit sie für den Betrieb der Website und des
+        E-Mail-Postfachs erforderlich sind. Wir selbst übermitteln keine Daten in Länder außerhalb der EU bzw. des EWR.
+        Eine automatisierte Entscheidungsfindung einschließlich Profiling findet nicht statt.
+    </p>
+
+    <h2><?= ($mapLinks || Config::get('site.social')) ? '8' : '7' ?>. Ihre Rechte</h2>
+    <p>
+        Sie haben gegenüber uns das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17),
+        Einschränkung der Verarbeitung (Art. 18) und Datenübertragbarkeit (Art. 20). Wenden Sie sich dazu an die oben
+        genannte Adresse.
+    </p>
+    <p>
+        <strong>Widerspruchsrecht:</strong> Sie können der Verarbeitung Ihrer Daten, die auf Art. 6 Abs. 1 lit. f DSGVO
+        beruht, aus Gründen, die sich aus Ihrer besonderen Situation ergeben, jederzeit widersprechen (Art. 21 DSGVO).
+        Wir verarbeiten die Daten dann nicht mehr, es sei denn, wir können zwingende schutzwürdige Gründe dafür nachweisen,
+        die Ihre Interessen überwiegen, oder die Verarbeitung dient der Geltendmachung, Ausübung oder Verteidigung von
+        Rechtsansprüchen.
+    </p>
+    <p>
+        Beruht eine Verarbeitung auf Ihrer Einwilligung, können Sie diese jederzeit mit Wirkung für die Zukunft widerrufen
+        (Art. 7 Abs. 3 DSGVO). Diese Website holt derzeit keine Einwilligungen ein.
+    </p>
+    <p>
+        Außerdem haben Sie das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren (Art. 77 DSGVO), insbesondere
+        in dem Mitgliedstaat Ihres gewöhnlichen Aufenthaltsorts, Ihres Arbeitsplatzes oder des Orts des mutmaßlichen Verstoßes.
+        Eine Übersicht der deutschen Aufsichtsbehörden finden Sie beim Bundesbeauftragten für den Datenschutz und die
+        Informationsfreiheit (bfdi.bund.de).
     </p>
 </section>

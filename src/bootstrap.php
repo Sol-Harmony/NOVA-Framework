@@ -30,11 +30,7 @@ ini_set('log_errors', '1');
 error_reporting(E_ALL);
 
 mb_internal_encoding('UTF-8');
-$timezone = (string) Config::get('site.timezone', 'Europe/Berlin');
-if (!in_array($timezone, timezone_identifiers_list(), true)) {
-    $timezone = 'Europe/Berlin';
-}
-date_default_timezone_set($timezone);
+date_default_timezone_set('Europe/Berlin');
 
 //errors go to storage/logs (not readable from the web). the file is moved aside at 5 MB so it can't grow forever
 $logDir = BASEPATH . '/storage/logs';

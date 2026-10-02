@@ -69,9 +69,7 @@ $hours = Config::get('site.business.hours', []);
                 <?= e(biz('street')) ?><br>
                 <?= e(trim(biz('zip') . ' ' . biz('city'))) ?>
             </address>
-<?php if (Utils::mapUrl() !== ''): ?>
-            <p><a href="<?= e(Utils::mapUrl()) ?>" target="_blank" rel="noopener noreferrer"><?= e(t('contact.route')) ?></a></p>
-<?php endif; ?>
+<?php $this->partial('maplinks'); ?>
 <?php endif; ?>
 <?php if (biz('phone') !== ''): ?>
             <p><?= e(t('contact.phone_label')) ?>: <a href="tel:<?= e(preg_replace('/[^0-9+]/', '', biz('phone'))) ?>"><?= e(biz('phone')) ?></a></p>

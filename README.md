@@ -1,104 +1,129 @@
 # NOVA, a minimal Framework for PHP
 
-A small PHP framework and website template without external libraries. It is meant as a starting point for small business websites: copy it, fill in the client's data, change the colors, go live.
+A small PHP framework without external libraries. It gives web developers a simple, no-fuss starting point for new websites, without relying on big, heavy frameworks.
 
-Needs PHP 7.4 or newer (`mbstring`, `session`, `json`; `openssl` for encrypted mail, `pdo_mysql` only if the site uses a database) and Apache with `mod_rewrite`.
+- Routing from the address to a controller and a view, with pretty URLs
+- Controllers, views (plain PHP templates) and simple models
+- Config in two files, translations, helper functions for the views
+- Security by default: CSRF protection, safe sessions, security headers, rate limiting, input validation
+- SMTP mail without a library
+- A terminal tool (`php nova`) to check the setup and test the mail
 
-## New website for a client
+The repository also contains a ready website template (start page, services, gallery, contact form, Impressum, privacy policy) built on the framework. How to turn it into a client website is explained in [SETUP.md](SETUP.md).
 
-1. Copy the project. Copy `config/config.example.ini` to `config/config.ini`.
-2. `config/site.php`: name, tagline, menu, address, opening hours, language (`de` or `en`).
-3. `assets/theme.css`: colors, fonts, shapes. Put the client's picture into `/pictures` (and point `--hero-image` at it), replace `favicon.ico`.
-4. `config/config.ini`: mail settings (see below). Add `[app]` `debug = 1` on your own computer only.
-5. Texts of the start page and the contact page are in `src/lang/de.php` and `en.php`. Change single texts for one client in `config/site.php` under `texts`, or edit the views in `src/view/`.
-6. Before going live run `php nova check`.
+## Requirements
 
-| What | Where |
+PHP 7.4 or newer (`mbstring`, `session`, `json`, `filter`; `openssl` for encrypted mail, `pdo_mysql` only if a model is used) and Apache with `mod_rewrite`.
+
+## Structure
+
+```
+index.php            entry point: security headers, then the Router
+nova                 terminal tool
+.htaccess            pretty URLs, blocks direct access to config, source and storage
+config/              site.php (content, in git) and config.ini (secrets, not in git)
+assets/              theme.css (colors, fonts, shapes) and style.css (layout)
+src/
+  controller/        one class per page
+  view/              templates: <page>/show.phtml, plus head, navbar, footer
+  model/             database models
+  core/              the framework: Router, Controller, Request, Config, Lang, Session, ...
+  lang/              translations (de.php, en.php)
+  scripts/           javascript (no inline scripts, see CSP)
+storage/             logs, sessions, rate limit files (not reachable from the web)
+```
+
+## How a request works
+
+`/product/show?id=5` runs the method `showAction()` of the class `Product` in `src/controller/Product.class.php`, then renders `src/view/product/show.phtml` inside the layout (head, navbar, footer). Without a method name `showAction` is used, the address `/` runs `Home`. Classes are loaded automatically from `src/model`, `src/controller` and `src/core`.
+
+Pretty URLs are set in `config/site.php`: `'routes' => ['kontakt' => 'contact']` makes `/kontakt` open the `Contact` controller. Use `route('contact')` in views to get the right address.
+
+```php
+class About extends Controller
+{
+    public function showAction()
+    {
+        $this->title = 'About us';                 // <title> of the page
+        $this->data['team'] = ['Anna', 'Ben'];     // available in the view as $this->data
+    }
+}
+```
+
+A new page is two files: the controller `src/controller/About.class.php` and the view `src/view/about/show.phtml` (folder in lowercase). It opens at `/about`. To use another address or to put it into the menu, add it to `routes` and `nav` in `config/site.php`.
+
+What a controller can do:
+
+| | |
 |---|---|
-| Content of the site (git) | `config/site.php` |
-| Passwords and server settings (not in git) | `config/config.ini` |
-| Look | `assets/theme.css`, `assets/style.css` |
-| Pages | `src/controller/*.class.php` + `src/view/<page>/show.phtml` |
-| Menu, header, footer | `config/site.php` (`nav`), `src/view/navbar.phtml`, `src/view/footer.phtml` |
-| Texts | `src/lang/` |
-| Scroll story on the start page (pictures that change while scrolling, text cards in front) | pictures and focus point in `assets/theme.css` (`--story-image-N`, `--story-position-N`), texts `story.N_title` / `story.N_text` in `src/lang/`, steps and card side in `src/view/home/show.phtml` |
+| `$this->data`, `$this->title`, `$this->description`, `$this->noindex` | values for the view and the page head |
+| `$this->myrequest->getText('name')`, `getParam()`, `getJson()`, `getPath()`, `getIp()` | read the request |
+| `$this->redirect('/path')` | redirect (only to paths of the site) |
+| `$this->abort(404)` | stop with an error page |
+| `$this->asJson([...])`, `$this->asText($body, $type)` | answer with JSON or plain text / XML |
+| `$this->setView('x/y')`, `$this->localizedView('page/show')` | other view, or `show.de.phtml` / `show.en.phtml` for the current language |
+| `$this->requirePost()` | only accept form submits |
+| `protected $allowedMethods`, `protected $csrf` | allowed HTTP methods (default GET, HEAD, POST), CSRF check on or off |
 
-Save pictures for the web before using them: about 1920 px wide, as WebP or JPG, under 300 KB. A photo straight from a phone or camera is several MB and makes the start page slow.
+## Config
 
-Standard pages: **Home** `/`, **Services** `/leistungen` (cards with price, from `services` in `config/site.php`), **Gallery** `/galerie` (shows every picture in `pictures/gallery/`, sorted by file name; descriptions from the file names or `gallery_alts` in `config/site.php`), **Contact** `/kontakt` (form that sends an e-mail), **Impressum** `/impressum`, **Privacy** `/datenschutz`. The pretty urls are set in `config/site.php` under `routes`, the menu under `nav`. Without a route the controller name is the url (`/contact`). Pages a client doesn't need: remove them from `nav` and `routes` (and delete the controller and view).
+- `config/site.php` returns an array with the content of the site. Read it with `Config::get('site.business.phone')`.
+- `config/config.ini` holds server settings and secrets, sections are available by name: `Config::get('mail.host')`, `Config::bool('app.debug')`. Copy `config/config.example.ini` to start.
+- `Config::text('site.tagline')` returns a text that may be given per language (`['de' => '...', 'en' => '...']`) in the visitor's language.
+- Debug is off unless `config.ini` says `debug = 1`. Errors go to `storage/logs/php-error.log`.
 
-## Search engines (local SEO)
+## Languages
 
-Set these in `config/site.php`:
-- `url`: the live address, e.g. `https://www.client.de` (no slash at the end). Without it there is no sitemap and no canonical link.
-- `noindex`: `true` while the site is not ready (test address), so search engines stay away (`robots.txt` and a meta tag). **Set it to `false` when the site goes live.**
-- `image`: picture shown when a page is shared, also sent to Google.
-- `business` → `type` (e.g. `Restaurant`, `Hairdresser`, `Plumber`, `Store`), address, phone, `hours`: sent to Google as structured business data (schema.org) in every page. Keep the format of `hours` (`Mo – Fr`, `09:00 – 18:00`), rows it can't read are shown but not sent.
-- `social`: links for the footer and for Google.
+Texts are in `src/lang/<code>.php` (`de`, `en`). Use `t('key')` or `t('key', ['name' => 'Anna'])` for `:name` placeholders in a view. Missing texts fall back to English, then to the key itself. The language is the `lang` setting in `site.php`, a visitor can choose another one with `?lang=en` in the address. Nothing is stored for this, so no cookie is needed. `Lang::withLang($url)` and `route()` keep the choice in links.
 
-`/robots.txt` and `/sitemap.xml` are made automatically (menu pages plus the legal pages). After going live: register the site at Google Search Console and submit the sitemap, and have the client set up the Google Business Profile with the same data. The "get directions" link opens Google Maps only when clicked, so no map is loaded from a third party and no consent is needed. On phones a "Call now" bar appears at the bottom when `phone` is set.
+## Helpers for views
 
-## Adding a page
+`e($text)` escapes for HTML (use it for everything printed), `t()`, `route()`, `asset('/assets/style.css')` (adds the change time so browsers reload changed files), `csrf_field()`, `biz('phone')` (value from the `business` block).
 
-```
-php nova make About --no-model        # page without a database: controller About + view about/show.phtml, opens at /about
-php nova make Product                 # with a database table "product": controller, model ProductModel, view
-```
-The pages made with a model list the whole table for everybody. Remove or protect them before going live if the data is private. Put the page into the `nav` list in `config/site.php`.
+## Security
+
+- **CSRF:** every POST needs the token. Put `<?= csrf_field() ?>` into each form, the Router checks it. For JavaScript send it in the header `X-CSRF-Token` (`Csrf::token()`).
+- **Sessions:** start only when a page uses them, so other pages set no cookie. `HttpOnly`, `SameSite=Lax`, `Secure` and `__Host-` prefix on https, own folder in `storage/`. `Session::get/set/flash/getFlash`, `Session::regenerate()` after a login, `Session::destroy()` on logout.
+- **Headers:** Content-Security-Policy (only files from the own site, no inline scripts), `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, HSTS on https. Extend `Security::csp()` if something external is needed.
+- **Rate limit:** `RateLimit::hit('key', $max, $seconds)` returns false when the limit is reached. Only a keyed hash of the key is stored, files are deleted after 24 hours.
+- **Validation:** `Validate` returns an error text or `null`: `ValidateText($input, $name, $min, $max)`, `ValidateEmail($input)`, `ValidatePattern($input, $name, $regex, $max)`.
+- **Output:** everything printed goes through `e()`, error pages never show details unless debug is on.
+- **Folders:** `config/`, `storage/`, `src/` (except `src/scripts`), `nova`, `*.md`, `*.ini`, `*.log` and dotfiles can't be requested from the web (`.htaccess`).
+- Behind a proxy or CDN set `proxy_header` under `[security]` in `config.ini`, and `trust_proxy = 1` if the proxy terminates https.
 
 ## Mail
 
-The contact form sends to `to` under `[mail]`. Use the SMTP data of the client's mailbox, PHP's `mail()` is a fallback that many hosters deliver badly.
-
-```
-[mail]
-to = "info@client.de"
-from_address = "info@client.de"
-host = "smtp.client-hoster.de"
-port = 587
-encryption = tls          ; tls (587) or ssl (465)
-username = "info@client.de"
-password = "..."
-```
-Test it: `php nova mail:test you@example.com`. If the mail server refuses a contact message, the visitor sees an error with the direct e-mail address, and the message is saved in `storage/outbox/` so it isn't lost.
-
-## What is protected
-
-- **Debug is off unless `config/config.ini` says `debug = 1`.** A live server without that file never shows error details. Errors are logged to `storage/logs/php-error.log`. Fatal errors and failing views give a clean error page in the site's layout (JSON for javascript requests).
-- **CSRF:** every POST (or PUT, DELETE, ...) needs the token of the form. Put `<?= csrf_field() ?>` into each form. The Router checks it, no controller code is needed. For javascript requests send the token in the header `X-CSRF-Token` (`Csrf::token()`). A controller can turn it off with `protected $csrf = false;` (only for webhooks).
-- **Sessions:** start only when a page needs them (the contact form), so other pages set no cookie. Cookie is `HttpOnly`, `SameSite=Lax`, `Secure` + `__Host-` prefix on https. Own session folder in `storage/`, idle timeout 2 hours, strict mode. After a login call `Session::regenerate()`, on logout `Session::destroy()`.
-- **Methods:** controllers only answer GET, HEAD and POST. Change per controller with `protected $allowedMethods`.
-- **Headers:** Content-Security-Policy (only files from this site, no inline scripts), `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, HSTS on https. If a client needs something external (a map), allow it in `config/site.php` under `csp` and update the privacy page.
-- **Contact form:** honeypot field, minimum fill-in time, 5 messages per hour and visitor (`RateLimit`), validation, header injection impossible. Behind a proxy or Cloudflare set `proxy_header` under `[security]`, or all visitors share one address and one limit.
-- **Folders:** `config/`, `storage/`, `src/` (except `src/scripts`), `nova`, `*.md`, `*.ini`, `*.log` and dotfiles can't be requested from the web (`.htaccess`, plus a second lock in `config/` and `storage/`).
-
-After the site runs on https, remove the `#` in front of the redirect in `.htaccess`.
-
-## Legal pages
-
-`Impressum` and `Privacy` are **templates, not legal advice**. They are filled from the `business` block in `config/site.php`, empty fields are left out. Which details are mandatory depends on the business (legal form, trade register, chambers, regulated professions). The privacy text matches the site as delivered: one technically necessary session cookie, no tracking, no external fonts, maps or videos. As soon as something is added (analytics, Google Maps, YouTube, newsletter, shop, login) the text must be extended and usually consent is needed. Have both pages checked with the client before going live.
+`Mail::send($to, $subject, $body, $replyTo, $replyToName)` sends a plain text mail through the SMTP server from `[mail]` in `config.ini` (STARTTLS or SSL, certificate checked), or PHP's `mail()` if no host is set. It returns `true` or `false` (reason in `Mail::lastError()`). Header injection is not possible: addresses are checked and the visitor's address only goes into `Reply-To`. `Mail::saveCopy()` keeps a message in `storage/outbox/` when sending failed.
 
 ## Terminal
 
 ```
 php nova help
-php nova make <Name> [--table=<table>] [--no-model]
-php nova check                       # go-live checklist
-php nova mail:test <address>
+php nova check                        # checks config, folders, mail and placeholders before going live
+php nova mail:test you@example.com    # sends a test mail with the settings from config.ini
 ```
-nova is part of the framework, run it from the project folder.
+
+Run `nova` from the project folder.
 
 ## Database
 
-Only needed when a page uses a model. Fill the `[database]` section in `config/config.ini`. Right now only MySQL is supported, more database options are on the roadmap.
+Only needed when a page uses a model. Fill the `[database]` section in `config/config.ini`. A model is a class in `src/model/` that extends `BaseModel` and names its table:
+
+```php
+class ProductModel extends BaseModel
+{
+    protected $table = 'product';
+}
+```
+
+`BaseModel` offers `find`, `all`, `where` and `create`, rows (`RowModel`) offer `save` and `delete`. Queries use prepared statements. Right now only MySQL is supported. Remember that a page that lists a table shows it to every visitor, so protect it if the data is private.
 
 ---
 
-If you have got ideas or want to help make the NOVA-Framework better, contributions are totally welcome!
-Just a quick note: this framework is meant to give web developers a simple, no-fuss starting point for building new websites, without relying on big, heavy frameworks or libraries.
+If you have ideas or want to help make the NOVA framework better, contributions are welcome.
 
-This project is licensed under the **GNU LGPL v2.1**.  
-You may use, modify, and distribute it under the terms of this license.  
-Modifications must remain open-source under the same license.  
+This project is licensed under the **GNU LGPL v2.1**.
+You may use, modify, and distribute it under the terms of this license.
+Modifications must remain open-source under the same license.
 
 Copyright (C) 2026 Hamzah Mansor

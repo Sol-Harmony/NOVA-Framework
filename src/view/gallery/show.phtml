@@ -3,7 +3,8 @@
     <p class="lead"><?= e(t('gallery.intro')) ?></p>
 
 <?php if ($this->data['images']): ?>
-    <div class="gallery">
+    <?php // main.js turns the links into a picture viewer (no javascript: the link opens the picture itself) ?>
+    <div class="gallery" data-label-close="<?= e(t('gallery.close')) ?>" data-label-prev="<?= e(t('gallery.prev')) ?>" data-label-next="<?= e(t('gallery.next')) ?>">
 <?php foreach ($this->data['images'] as $image): ?>
 <?php if (!is_array($image) || empty($image['src'])) { continue; } ?>
         <a href="<?= e($image['src']) ?>" target="_blank" rel="noopener">

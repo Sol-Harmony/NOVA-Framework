@@ -50,6 +50,17 @@ class Config    //reads the two config files. Config::get('mail.host'), Config::
         return $value;
     }
 
+    //a text that can be given per language: 'tagline' => ['de' => 'Hallo', 'en' => 'Hello'] gives the one of the visitor's language
+    //(then english, then the first one). A plain text is returned as it is, so existing configs keep working
+    public static function text($key, $default = '')
+    {
+        $value = self::get($key, $default);
+        if (is_array($value)) {
+            $value = $value[Lang::code()] ?? $value['en'] ?? (reset($value) ?: $default);
+        }
+        return is_scalar($value) ? (string) $value : (string) $default;
+    }
+
     //for switches in the ini file: 1, true, on and yes are true, everything else is false
     public static function bool($key, $default = false)
     {

@@ -3,12 +3,29 @@
 // no external fonts, maps or videos, a contact form that sends e-mail.
 // As soon as something is added (analytics, Google Maps, YouTube, newsletter, shop, login, ...) the text has to be extended and
 // usually consent (cookie banner) is needed. Have it checked before going live.
-// The data comes from 'business' in config/site.php.
+//
+// The facts come from config/site.php: 'business' (controller, hoster) and 'privacy' (log retention, mail provider, data
+// protection officer). They have to be TRUE for this website. Check before going live:
+//  - Data processing agreements (Art. 28 GDPR) signed with the hoster and the mail provider?
+//  - How long does the hoster keep log files? Enter it as 'privacy' => 'log_days'.
+//  - Are the hoster or mail provider outside the EU/EEA? Then extend the "Recipients" section (transfers to third countries).
+//  - Does the website run on https? Without it the paragraph about encryption is wrong.
+$privacy = Config::get('site.privacy', []);
+$privacy = is_array($privacy) ? $privacy : [];
+$logDays = max(1, (int) ($privacy['log_days'] ?? 7));
+$mailProvider = trim((string) ($privacy['mail_provider'] ?? ''));
+$limitByIp = Config::bool('security.limit_by_ip', true);
+$mapLinks = Utils::mapLinks();
+$hasLinks = $mapLinks || Config::get('site.social');
 ?>
 <section class="container section prose">
     <h1>Privacy policy</h1>
 
     <h2>1. Controller</h2>
+    <p>
+        The controller for the data processing on this website within the meaning of the General Data Protection Regulation
+        (GDPR) is:
+    </p>
     <p>
         <?= e(biz('name')) ?><br>
         <?= e(biz('street')) ?>, <?= e(trim(biz('zip') . ' ' . biz('city'))) ?><br>
@@ -20,35 +37,108 @@
 
     <h2>2. Hosting and server log files</h2>
     <p>
-        When you open this website the web server automatically processes technical data: IP address, date and time,
-        requested page, amount of data sent, browser and operating system. This is necessary to run the website securely and
-        reliably (Art. 6(1)(f) GDPR). The data is deleted after a short time unless longer storage is needed for security reasons.
-<?php if (biz('hosting') !== ''): ?>
-        The website is hosted by: <?= e(biz('hosting')) ?>.
-<?php endif; ?>
+        When you open this website the web server automatically processes technical data that your browser sends: IP address,
+        date and time of the request, requested page, amount of data sent, status code, browser and operating system. This
+        processing is necessary to deliver the website and to run it securely and reliably (Art. 6(1)(f) GDPR, legitimate
+        interest in secure operation). The log files are deleted after <?= e($logDays) ?> days unless longer storage is needed to
+        investigate an abuse. The data is not combined with other data.
     </p>
+<?php if (biz('hosting') !== ''): ?>
+    <p>
+        The website is hosted by: <?= e(biz('hosting')) ?>. The provider processes the data on our behalf; a data processing
+        agreement (Art. 28 GDPR) is in place.
+    </p>
+<?php endif; ?>
+<?php if (Utils::isHttps()): ?>
+    <p>
+        The connection between your browser and this website is encrypted with TLS (you can see it from the padlock and
+        "https" in the address bar).
+    </p>
+<?php endif; ?>
 
     <h2>3. Contact form and e-mail</h2>
     <p>
         If you write to us through the contact form or by e-mail we process your name, e-mail address, an optional phone number
-        and your message to answer your request (Art. 6(1)(b) or (f) GDPR). We do not pass the data on. We delete it when
-        your request is dealt with and no legal retention duty applies.
+        and the content of your message to answer your request. The legal basis is Art. 6(1)(b) GDPR if the request is related
+        to a contract or pre-contractual measures, otherwise Art. 6(1)(f) GDPR (legitimate interest in answering enquiries).
+        Giving your name, e-mail address and message is voluntary, but without them we cannot deal with your request.
     </p>
     <p>
-        To protect against abuse (spam) a hash (pseudonym) of your IP address is stored for at most 24 hours when you send
-        the form, to limit the number of messages per visitor (Art. 6(1)(f) GDPR).
-    </p>
-
-    <h2>4. Cookies</h2>
-    <p>
-        This website only uses one technically necessary session cookie. It protects the contact form against forged requests
-        and is deleted when you close the browser. No consent is required for it. No cookies are set for analytics or advertising.
+        The data is delivered to us by e-mail<?php if ($mailProvider !== ''): ?>. The mailbox is run by:
+        <?= e($mailProvider) ?>. The provider processes the data on our behalf (Art. 28 GDPR)<?php endif; ?>.
+        We do not pass the data on beyond that. We delete it when your request is dealt with and no legal retention duty
+        (e.g. for business letters) applies. If a message cannot be delivered for technical reasons it is kept on the server
+        temporarily and deleted automatically after 30 days at the latest.
     </p>
 
-    <h2>5. Your rights</h2>
+    <h2>4. Protection of the contact form against abuse</h2>
     <p>
-        You have the right of access (Art. 15 GDPR), rectification (Art. 16), erasure (Art. 17), restriction of processing
-        (Art. 18), data portability (Art. 20) and to object (Art. 21). Contact us at the address above. You can also complain to
-        a data protection supervisory authority.
+        To protect the form against automated requests (spam) we use a hidden field, a minimum time between opening and
+        sending the form and an upper limit for the number of messages per hour (Art. 6(1)(f) GDPR, legitimate interest in the
+        security and availability of the form).
+<?php if ($limitByIp): ?>
+        For this, a hash of your IP address is stored when you send the form. It is created with a secret key that only exists
+        on the server, so the IP address cannot be calculated back from it, and it is deleted after 24 hours at the latest.
+<?php else: ?>
+        No IP address is stored for this.
+<?php endif; ?>
+    </p>
+
+    <h2>5. Cookies and storage on your device</h2>
+    <p>
+        This website only uses one technically necessary session cookie. It is set when you open the contact page, protects the
+        form against forged requests and only contains a random identifier. It is deleted when you close the browser. No
+        consent is required for it (section 25(2) no. 2 TDDDG); the processing is based on Art. 6(1)(f) GDPR.
+    </p>
+    <p>
+        No cookies or similar technologies are used for analytics or advertising, and no content from third parties (fonts,
+        maps, videos, tracking services) is loaded. Your language choice is only passed on in the address of the page
+        ("?lang=…") and is not stored on your device.
+    </p>
+
+<?php if ($hasLinks): ?>
+    <h2>6. Links to other websites</h2>
+<?php if ($mapLinks): ?>
+    <p>
+        The directions links lead to Google Maps (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland) or
+        Apple Maps (Apple Distribution International Ltd., Hollyhill Industrial Estate, Cork, Ireland). Only when you click one
+        of these links is your request sent to the respective provider, who then processes data such as your IP address. We
+        have no influence on this; the provider's privacy policy applies. Merely opening this website does not send any data
+        to these providers.
+    </p>
+<?php endif; ?>
+<?php if (Config::get('site.social')): ?>
+    <p>
+        The links to social networks are plain links. Only when you click them is data sent to the respective network; its
+        privacy policy applies.
+    </p>
+<?php endif; ?>
+<?php endif; ?>
+
+    <h2><?= $hasLinks ? '7' : '6' ?>. Recipients, third countries and automated decisions</h2>
+    <p>
+        Recipients of your data are only the service providers named above, as far as they are needed to run the website and the
+        e-mail mailbox. We ourselves do not transfer data to countries outside the EU/EEA. There is no automated decision-making,
+        including profiling.
+    </p>
+
+    <h2><?= $hasLinks ? '8' : '7' ?>. Your rights</h2>
+    <p>
+        You have the right to access (Art. 15 GDPR), rectification (Art. 16), erasure (Art. 17), restriction of processing
+        (Art. 18) and data portability (Art. 20) against us. Contact us at the address above.
+    </p>
+    <p>
+        <strong>Right to object:</strong> You may object at any time, on grounds relating to your particular situation, to
+        processing of your data that is based on Art. 6(1)(f) GDPR (Art. 21 GDPR). We will then stop processing the data
+        unless we can demonstrate compelling legitimate grounds that override your interests, or the processing serves the
+        establishment, exercise or defence of legal claims.
+    </p>
+    <p>
+        If processing is based on your consent you can withdraw it at any time with effect for the future (Art. 7(3) GDPR).
+        This website does not currently ask for any consent.
+    </p>
+    <p>
+        You also have the right to lodge a complaint with a data protection supervisory authority (Art. 77 GDPR), in particular
+        in the member state of your habitual residence, place of work or place of the alleged infringement.
     </p>
 </section>

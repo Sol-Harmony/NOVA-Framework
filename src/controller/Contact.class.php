@@ -6,6 +6,11 @@ class Contact extends Controller
     {
         $this->title = t('contact.title');
 
+        // old saved messages (personal data) are deleted now and then
+        if (mt_rand(1, 20) === 1) {
+            Mail::purgeOutbox();
+        }
+
         // the moment the form was shown: a bot that posts directly or within a second is no visitor
         Session::set('contact_form_at', time());
 
@@ -44,13 +49,17 @@ class Contact extends Controller
         $errors['name'] = $validate->ValidateText($old['name'], t('contact.name'), 2, 100);
         $errors['email'] = $validate->ValidateEmail($old['email']);
         $errors['message'] = $validate->ValidateText($old['message'], t('contact.message'), 10, 3000);
-        if ($old['phone'] !== '' && (strlen($old['phone']) > 40 || !preg_match('/^[0-9+()\/\-. ]+$/', $old['phone']))) {
-            $errors['phone'] = t('contact.phone_invalid');
-        }
+        $errors['phone'] = $validate->ValidatePattern($old['phone'], t('contact.phone_label'), '/^[0-9+()\/\-. ]+$/', 40);
         $errors = array_filter($errors);        // only the fields with a problem stay
 
         // the limit counts only valid messages, a visitor who mistyped isn't punished
-        if (!$errors && !RateLimit::hit('contact:' . $request->getIp(), 5, 3600)) {
+        // ([security] limit_by_ip = 0 in config.ini: no IP address is used at all, only the overall limit below)
+        if (!$errors && Config::bool('security.limit_by_ip', true) && !RateLimit::hit('contact:' . $request->getIp(), 5, 3600)) {
+            $errors['form'] = t('contact.rate_limited');
+        }
+        // overall limit for the whole website (any visitors together): protects the mailbox when a botnet uses many addresses.
+        // no personal data in this key
+        if (!$errors && !RateLimit::hit('contact:all', 100, 3600)) {
             $errors['form'] = t('contact.rate_limited');
         }
 
@@ -75,23 +84,10 @@ class Contact extends Controller
             Session::flash('contact_sent', true);
         } else {
             // never lose a customer's message: keep a copy where the owner can find it (storage/ is not reachable from the web)
-            $this->keepCopy($subject, $body);
+            Mail::saveCopy($subject, $body);
             Session::flash('contact_failed', true);
             Session::flash('contact_old', $old);
         }
         $this->redirect(route('contact'));
-    }
-
-    // storage/outbox/<date>-<random>.txt, for messages the mail server refused
-    protected function keepCopy($subject, $body)
-    {
-        $dir = BASEPATH . '/storage/outbox';
-        if (!is_dir($dir)) {
-            @mkdir($dir, 0775, true);
-        }
-        $file = $dir . '/' . date('Ymd-His') . '-' . bin2hex(random_bytes(4)) . '.txt';
-        if (@file_put_contents($file, $subject . "\n\n" . $body) === false) {
-            error_log("Contact: message could not be sent and could not be saved either:\n" . $subject . "\n" . $body);
-        }
     }
 }

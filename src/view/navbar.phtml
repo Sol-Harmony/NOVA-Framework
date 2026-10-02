@@ -4,16 +4,22 @@ $current = trim($this->myrequest->getPath(), '/');
 $items = Config::get('site.nav', []);
 ?>
 <header class="site-header">
+    <div class="story-bg"></div>
     <div class="container header-inner">
-        <a class="brand" href="/"><?= e(Config::get('site.name', '')) ?></a>
+        <a class="brand" href="<?= e(Lang::withLang('/')) ?>"><?= e(Config::get('site.name', '')) ?></a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><?= e(t('nav.menu')) ?></button>
         <nav id="site-nav" class="site-nav" aria-label="<?= e(t('nav.menu')) ?>">
             <ul class="nav-list">
 <?php foreach (is_array($items) ? $items : [] as $item): ?>
 <?php if (empty($item['label']) || empty($item['url'])) { continue; } ?>
-                <li><a href="<?= e($item['url']) ?>"<?= trim($item['url'], '/') === $current ? ' aria-current="page"' : '' ?>><?= e(t($item['label'])) ?></a></li>
+                <li><a href="<?= e(Lang::withLang($item['url'])) ?>"<?= trim($item['url'], '/') === $current ? ' aria-current="page"' : '' ?>><?= e(t($item['label'])) ?></a></li>
 <?php endforeach; ?>
             </ul>
+            <div class="lang-switch" role="group" aria-label="<?= e(t('nav.language')) ?>">
+<?php foreach (Lang::available() as $code): ?>
+                <a href="<?= e($this->myrequest->getPath() . ($code === Lang::configured() ? '' : '?lang=' . $code)) ?>" rel="nofollow" lang="<?= e($code) ?>" hreflang="<?= e($code) ?>"<?= $code === Lang::code() ? ' aria-current="true"' : '' ?>><?= e(strtoupper($code)) ?></a>
+<?php endforeach; ?>
+            </div>
         </nav>
     </div>
 </header>
