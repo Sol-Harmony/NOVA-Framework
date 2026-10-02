@@ -106,13 +106,13 @@ class Controller
         if ($this->title) {
             return $site === '' ? $this->title : $this->title . ' – ' . $site;
         }
-        $tagline = (string) Config::get('site.tagline', '');
+        $tagline = Config::text('site.tagline');
         return $tagline === '' ? $site : $site . ' – ' . $tagline;
     }
 
     public function pageDescription()
     {
-        return (string) ($this->description ?: Config::get('site.description', ''));
+        return (string) ($this->description ?: Config::text('site.description'));
     }
 
     // true for pages search engines should skip: error pages, and every page while 'noindex' => true in config/site.php
@@ -129,7 +129,7 @@ class Controller
         if (!$parts || ($parts === ['home'])) {
             return '/';
         }
-        return count($parts) === 1 ? Utils::url($this->classname) : $path;
+        return count($parts) === 1 ? Utils::url($this->classname, null, false) : $path;
     }
 
     // includes a part of the layout or a part of a page from /src/view, e.g. 'head'

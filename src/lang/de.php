@@ -7,6 +7,7 @@ return [
     'nav.services' => 'Leistungen',
     'nav.gallery'  => 'Galerie',
     'nav.menu'    => 'Menü',
+    'nav.language' => 'Sprache',
     'call'        => 'Jetzt anrufen',
     'skip'        => 'Zum Inhalt springen',
 
@@ -22,10 +23,13 @@ return [
 
     'gallery.title'  => 'Galerie',
     'gallery.intro'  => 'Einblicke in unsere Arbeit.',
+    'gallery.close'  => 'Schließen',
+    'gallery.prev'   => 'Vorheriges Bild',
+    'gallery.next'   => 'Nächstes Bild',
 
     'home.cta'          => 'Kontakt aufnehmen',
     'home.intro_title'  => 'Willkommen',
-    'home.intro_text'   => 'Hier stellen Sie Ihr Unternehmen in zwei, drei Sätzen vor: Wer Sie sind, was Sie anbieten und warum Kunden zu Ihnen kommen.',
+    'home.intro_text'   => 'Hier stellen Sie Name in zwei, drei Sätzen vor: Wer Sie sind, was Sie anbieten und warum Kunden zu Ihnen kommen.',
     'home.card1_title'  => 'Erfahrung',
     'home.card1_text'   => 'Ein Vorteil Ihres Angebots, kurz und konkret beschrieben.',
     'home.card2_title'  => 'Qualität',
@@ -33,7 +37,7 @@ return [
     'home.card3_title'  => 'Service',
     'home.card3_text'   => 'Ein dritter Vorteil, der Kunden überzeugt.',
     'story.1_title'     => 'Unsere Geschichte',
-    'story.1_text'      => 'Erzählen Sie hier, wie Ihr Unternehmen entstanden ist und was Sie antreibt. Zwei, drei Sätze reichen.',
+    'story.1_text'      => 'Erzählen Sie hier, wie Name entstanden ist und was Sie antreibt. Zwei, drei Sätze reichen.',
     'story.2_title'     => 'Was wir für Sie tun',
     'story.2_text'      => 'Beschreiben Sie Ihr Angebot so, dass Besucher sofort verstehen, wie Sie ihnen helfen.',
     'story.3_title'     => 'Das macht uns aus',
@@ -59,13 +63,13 @@ return [
     'contact.address'        => 'Adresse',
     'contact.route'          => 'Route planen',
     'contact.phone_label'    => 'Telefon',
-    'contact.phone_invalid'  => 'Die Telefonnummer enthält ungültige Zeichen.',
 
     'mail.subject' => 'Neue Anfrage über :site von :name',
 
     'validate.missing'       => ':field fehlt.',
     'validate.too_short'     => ':field ist zu kurz (mindestens :min Zeichen).',
     'validate.too_long'      => ':field ist zu lang (höchstens :max Zeichen).',
+    'validate.invalid'       => ':field enthält ungültige Zeichen.',
     'validate.email_missing' => 'E-Mail fehlt.',
     'validate.email_invalid' => 'Bitte geben Sie eine gültige E-Mail-Adresse an.',
 

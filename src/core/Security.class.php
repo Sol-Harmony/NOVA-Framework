@@ -30,8 +30,7 @@ class Security  //security headers, sent with every response (index.php calls se
     }
 
     //content security policy: the browser only loads scripts, styles, images and fonts from this website.
-    //if a client needs something external (a Google map, a video), add it in config/site.php:
-    //  'csp' => ['frame-src' => ['https://www.google.com'], 'img-src' => ['https://images.example.com']]
+    //if a client needs something external (a Google map, a video), add its address to the list below, and update the privacy page and cookie consent
     public static function csp()
     {
         $directives = [
@@ -46,24 +45,6 @@ class Security  //security headers, sent with every response (index.php calls se
             'base-uri'        => ["'self'"],
             'object-src'      => ["'none'"],
         ];
-
-        $extra = Config::get('site.csp', []);
-        if (is_array($extra)) {
-            foreach ($extra as $directive => $sources) {
-                if (!is_string($directive) || !preg_match('/^[a-z-]+$/', $directive) || !is_array($sources)) {
-                    continue;
-                }
-                if (!isset($directives[$directive])) {
-                    $directives[$directive] = ["'self'"];
-                }
-                foreach ($sources as $source) {
-                    //no spaces, semicolons or commas: one source must not be able to add a new directive
-                    if (is_string($source) && preg_match('/^[^\s;,]+$/', $source) && !in_array($source, $directives[$directive], true)) {
-                        $directives[$directive][] = $source;
-                    }
-                }
-            }
-        }
 
         $parts = [];
         foreach ($directives as $name => $sources) {

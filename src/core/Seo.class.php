@@ -43,8 +43,8 @@ class Seo       //things for search engines: canonical url, sitemap, and the bus
                 $paths[] = $item['url'];
             }
         }
-        $paths[] = Utils::url('impressum');
-        $paths[] = Utils::url('privacy');
+        $paths[] = Utils::url('impressum', null, false);
+        $paths[] = Utils::url('privacy', null, false);
         return array_values(array_unique($paths));
     }
 
@@ -70,7 +70,7 @@ class Seo       //things for search engines: canonical url, sitemap, and the bus
         if ($url !== '') {
             $data['url'] = $url;
         }
-        $description = (string) Config::get('site.description', '');
+        $description = Config::text('site.description');
         if ($description !== '') {
             $data['description'] = $description;
         }

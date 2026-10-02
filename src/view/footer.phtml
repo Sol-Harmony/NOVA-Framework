@@ -2,10 +2,10 @@
 $hours = Config::get('site.business.hours', []);
 $phone = biz('phone');
 $tel = preg_replace('/[^0-9+]/', '', $phone);
-$mapUrl = Utils::mapUrl();
 $social = Config::get('site.social', []);
 ?>
 <footer class="site-footer">
+    <div class="story-bg"></div>
     <div class="container footer-grid">
         <div>
             <strong><?= e(biz('name') ?: Config::get('site.name', '')) ?></strong>
@@ -15,9 +15,7 @@ $social = Config::get('site.social', []);
                 <?= e(trim(biz('zip') . ' ' . biz('city'))) ?>
             </address>
 <?php endif; ?>
-<?php if ($mapUrl !== ''): ?>
-            <p><a href="<?= e($mapUrl) ?>" target="_blank" rel="noopener noreferrer"><?= e(t('contact.route')) ?></a></p>
-<?php endif; ?>
+<?php $this->partial('maplinks'); ?>
 <?php if ($phone !== ''): ?>
             <p><a href="tel:<?= e($tel) ?>"><?= e($phone) ?></a></p>
 <?php endif; ?>

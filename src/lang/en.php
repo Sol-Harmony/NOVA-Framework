@@ -7,6 +7,7 @@ return [
     'nav.services' => 'Services',
     'nav.gallery'  => 'Gallery',
     'nav.menu'    => 'Menu',
+    'nav.language' => 'Language',
     'call'        => 'Call now',
     'skip'        => 'Skip to content',
 
@@ -22,6 +23,9 @@ return [
 
     'gallery.title'  => 'Gallery',
     'gallery.intro'  => 'A look at our work.',
+    'gallery.close'  => 'Close',
+    'gallery.prev'   => 'Previous picture',
+    'gallery.next'   => 'Next picture',
 
     'home.cta'          => 'Get in touch',
     'home.intro_title'  => 'Welcome',
@@ -59,13 +63,13 @@ return [
     'contact.address'        => 'Address',
     'contact.route'          => 'Get directions',
     'contact.phone_label'    => 'Phone',
-    'contact.phone_invalid'  => 'The phone number contains invalid characters.',
 
     'mail.subject' => 'New request via :site from :name',
 
     'validate.missing'       => ':field is missing.',
     'validate.too_short'     => ':field is too short (at least :min characters).',
     'validate.too_long'      => ':field is too long (at most :max characters).',
+    'validate.invalid'       => ':field contains invalid characters.',
     'validate.email_missing' => 'E-mail is missing.',
     'validate.email_invalid' => 'Please enter a valid e-mail address.',
 

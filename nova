@@ -3,7 +3,6 @@
 
 /**
  * Terminal commands of the framework. Run from the project folder:
- *   php nova make Product
  *   php nova check
  *   php nova mail:test you@example.com
  *   php nova help

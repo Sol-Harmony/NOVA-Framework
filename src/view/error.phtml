@@ -4,5 +4,5 @@
 <?php if (!empty($this->data['detail'])): ?>
     <pre class="error-detail"><?= e($this->data['detail']) ?></pre>
 <?php endif; ?>
-    <p><a class="btn" href="/"><?= e(t('error.back')) ?></a></p>
+    <p><a class="btn" href="<?= e(Lang::withLang('/')) ?>"><?= e(t('error.back')) ?></a></p>
 </section>

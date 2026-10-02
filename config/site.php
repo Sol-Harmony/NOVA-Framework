@@ -4,14 +4,21 @@
  * Content of this website. This is the file you edit for every new client.
  * It is part of the project (in git). Passwords and server settings do NOT belong here, they go into config/config.ini.
  *
- * Colors, fonts and shapes are in assets/theme.css, texts of the standard pages in src/lang/ (or 'texts' below).
+ * Colors, fonts and shapes are in assets/theme.css, texts of the standard pages in src/lang/.
  */
 return [
-    'name'        => 'Ihr Unternehmen',                                 //shown in the header, the footer and the <title> of every page
-    'tagline'     => 'Ein kurzer Satz darüber, was Sie anbieten',        //title of the home page, next to the name
-    'description' => 'Standardbeschreibung für Suchmaschinen, etwa 150 Zeichen lang. Jede Seite kann eine eigene setzen.',
-    'lang'        => 'de',                                              //de or en (files in src/lang/)
-    'timezone'    => 'Europe/Berlin',
+    'name'        => 'Nova Framework',                                 //shown in the header, the footer and the <title> of every page
+    //title of the home page, next to the name. One text per language (de / en), or just one plain text for both
+    'tagline'     => [
+        'de' => 'Ein kurzer Satz darüber, was Sie anbieten',
+        'en' => 'A short sentence about what you offer',
+    ],
+    //same for the description for search engines (about 150 characters). Every page can set its own
+    'description' => [
+        'de' => 'Standardbeschreibung für Suchmaschinen, etwa 150 Zeichen lang. Jede Seite kann eine eigene setzen.',
+        'en' => 'Default description for search engines, about 150 characters long. Every page can set its own.',
+    ],
+    'lang'        => 'de',                                              //language visitors see first: de or en (files in src/lang/)
 
     //address of the live website, without a slash at the end. Needed for the sitemap, the canonical links and Google's business data.
     //Set it when the site goes live: 'https://www.client.de'
@@ -51,9 +58,7 @@ return [
         'email'       => 'info@example.com',
         'vat_id'      => '',                            //USt-IdNr., e.g. DE123456789
         'register'    => '',                            //e.g. Amtsgericht Musterstadt, HRB 12345
-        'responsible' => '',                            //person responsible for the content, if different from the owner
         'hosting'     => '',                            //name and address of the hoster, for the privacy page
-        'map_url'     => '',                            //link behind "get directions". Empty = Google Maps search for the address above
         //opening hours: [days, times]. Also sent to Google, so keep this form: days like "Mo – Fr", "Sa" or "Mo, Mi, Fr",
         //times like "09:00 – 18:00" or "09:00 – 12:00, 14:00 – 18:00". A row like ['So', 'geschlossen'] is shown but not sent to Google
         'hours'       => [
@@ -75,16 +80,11 @@ return [
 
     //page /galerie shows every picture in the folder /pictures/gallery (sorted by file name). Delete the sample pictures there and
     //put the client's in (about 1920 px wide, WebP or JPG, under 300 KB). The description for visitors who can't see the picture
-    //and for Google comes from the file name ("shop-front.webp" → "shop front"). Better text per picture:
-    //'gallery_alts' => ['shop-front.webp' => 'The shop front in spring'],
-    'gallery_alts' => [],
+    //and for Google comes from the file name ("shop-front.webp" → "shop front"), so name the files well
 
-    //allow something from another website, e.g. an embedded Google map. Think about the privacy page and cookie consent first!
-    //(the "get directions" link needs none of this: it only opens Google Maps when the visitor clicks it)
-    //'csp' => ['frame-src' => ['https://www.google.com']],
-    'csp' => [],
-
-    //replace single texts of src/lang/ for this client without touching the language files
-    //'texts' => ['nav.home' => 'Willkommen'],
-    'texts' => [],
+    //facts for the privacy policy (/datenschutz). They have to be TRUE for this website, ask the hoster and the mail provider:
+    'privacy' => [
+        'log_days'      => 7,       //days the web server keeps its log files (with the visitors' IP addresses). Ask the hoster, then enter it
+        'mail_provider' => '',      //who runs the mailbox the contact form sends to, with address, e.g. 'IONOS SE, Elgendorfer Str. 57, 56410 Montabaur'
+    ],
 ];

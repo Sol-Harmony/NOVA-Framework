@@ -45,30 +45,45 @@ class Utils     //small helpers. the views use them through the functions in hel
         return $path . '?v=' . (is_file($file) ? filemtime($file) : 0);
     }
 
-    //link to the business on a map, for a "get directions" link. no map is embedded, so nothing is loaded from another
-    //website until the visitor clicks. 'map_url' in the business block of config/site.php replaces it
-    public static function mapUrl()
+    //links that open directions to an address in a maps app: ['Google Maps' => url, 'Apple Maps' => url]. no map is embedded, so
+    //nothing is loaded from another website until the visitor clicks. without an address the business address from
+    //config/site.php is used, empty array = no address
+    public static function mapLinks($address = null)
     {
-        $custom = Config::get('site.business.map_url', '');
-        if (is_string($custom) && preg_match('#^https?://#', $custom)) {
-            return $custom;
+        if ($address === null) {
+            $b = Config::get('site.business', []);
+            $parts = [];
+            foreach (['street', 'zip', 'city', 'country'] as $key) {
+                if (is_array($b) && isset($b[$key]) && is_scalar($b[$key]) && trim((string) $b[$key]) !== '') {
+                    $parts[] = trim((string) $b[$key]);
+                }
+            }
+            if (!isset($b['street']) || !isset($b['city'])) {
+                return [];
+            }
+            $address = implode(', ', $parts);
         }
 
-        $b = Config::get('site.business', []);
-        $parts = [];
-        foreach (['street', 'zip', 'city', 'country'] as $key) {
-            if (is_array($b) && isset($b[$key]) && is_scalar($b[$key]) && trim((string) $b[$key]) !== '') {
-                $parts[] = trim((string) $b[$key]);
-            }
+        $address = trim((string) $address);
+        if ($address === '') {
+            return [];
         }
-        if (!isset($b['street']) || !isset($b['city']) || !$parts) {
-            return '';
-        }
-        return 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode(implode(', ', $parts));
+        $encoded = rawurlencode($address);
+        return [
+            'Google Maps' => 'https://www.google.com/maps/dir/?api=1&destination=' . $encoded,
+            'Apple Maps'  => 'https://maps.apple.com/?daddr=' . $encoded,
+        ];
     }
 
     //url of a controller (and action), uses the pretty urls from 'routes' in config/site.php: url('contact') → /kontakt
-    public static function url($controller, $action = null)
+    //$keepLang false = without the "?lang=" of the visitor's language (canonical links, sitemap)
+    public static function url($controller, $action = null, $keepLang = true)
+    {
+        $path = self::path($controller, $action);
+        return $keepLang ? Lang::withLang($path) : $path;
+    }
+
+    private static function path($controller, $action)
     {
         $controller = strtolower($controller);
         if ($controller === 'home' && $action === null) {
